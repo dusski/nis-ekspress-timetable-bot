@@ -30,8 +30,8 @@ const D_to_N =
 	N_to_K =
 		"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=NI%C5%A0&ToPointName=KO%C4%8CANE+R.&FromPointNameId=2710&ToPointNameId=5443&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
 
-let getBusses = url => {
-	request(url, async (err, res, html) => {
+let getBuses = url => {
+	return request(url, async (err, res, html) => {
 		if (err) throw err;
 
 		let $ = cheerio.load(html);
@@ -44,9 +44,9 @@ let getBusses = url => {
 };
 
 // response part
-bot.on("message", (payload, chat) => {
-	chat.say(`Echo: ${payload.message.text}`);
-});
+// bot.on("message", (payload, chat) => {
+// 	chat.say(`Echo: ${payload.message.text}`);
+// });
 
 bot.hear("/help", (payload, chat) => {
 	chat.say(`You can chose one of the following options:
@@ -56,18 +56,18 @@ bot.hear("/help", (payload, chat) => {
     - N > K (Niš > Kočane R.)`);
 });
 
-bot.hear("D > N", (payload, chat) => {
-	chat.say(getBusses(D_to_N));
+bot.hear("D > N", async (payload, chat) => {
+	chat.say(await getBuses(D_to_N));
 });
 
-bot.hear("N > D", (payload, chat) => {
-	chat.say(getBusses(N_to_D));
+bot.hear("N > D", async (payload, chat) => {
+	chat.say(await getBuses(N_to_D));
 });
 
-bot.hear("K > N", (payload, chat) => {
-	chat.say(getBusses(K_to_N));
+bot.hear("K > N", async (payload, chat) => {
+	chat.say(await getBuses(K_to_N));
 });
 
-bot.hear("N > K", (payload, chat) => {
-	chat.say(getBusses(N_to_K));
+bot.hear("N > K", async (payload, chat) => {
+	chat.say(await getBuses(N_to_K));
 });
