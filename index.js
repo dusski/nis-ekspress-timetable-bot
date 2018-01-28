@@ -40,9 +40,10 @@ let getBuses = url => {
 };
 
 // response part
-// bot.on("message", (payload, chat) => {
-// 	chat.say(`Echo: ${payload.message.text}`);
-// });
+bot.on("message", (payload, chat, data) => {
+	console.log(data);
+	chat.say(`Echo: ${payload.message.text}`);
+});
 
 bot.hear("/help", (payload, chat) => {
 	chat.say(`You can chose one of the following options:
