@@ -41,7 +41,7 @@ let getBusses = url => {
 
 // response part
 bot.on("message", (payload, chat) => {
-	chat.say(`Echo: ${text}`);
+	chat.say(`Echo: ${payload.message.text}`);
 });
 
 bot.setPersistentMenu(["D > N", "N > D"]);
