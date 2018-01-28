@@ -13,6 +13,7 @@ const bot = new BootBot({
 });
 
 bot.start(process.env.PORT);
+bot.setGetStartedButton("Choose the apropriate direction:");
 let output;
 
 // web scraping part
@@ -43,9 +44,4 @@ bot.on("message", (payload, chat) => {
 	chat.say(`Echo: ${text}`);
 });
 
-bot.setPersistentMenu([
-	"Doljevac > Niš",
-	"Niš > Doljevac",
-	"Kočane R. > Niš",
-	"Niš > Kočane R."
-]);
+bot.setPersistentMenu(["D > N", "N > D", "K > N", "N > K"]);
