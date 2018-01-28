@@ -22,7 +22,7 @@ request(url, (err, res, html) => {
 
 	let $ = cheerio.load(html);
 
-	output = JSON.stringify($);
+	output = $("#JourneyPeriodFilter_div").text();
 });
 
 // response part
