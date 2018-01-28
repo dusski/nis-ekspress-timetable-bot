@@ -35,6 +35,8 @@ let getBuses = url => {
 		output = await $(".listing-border > tbody")
 			.children()
 			.text();
+
+		console.log(output);
 	});
 };
 
