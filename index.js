@@ -34,15 +34,15 @@ let getBuses = url => {
 
 		output = await $(".listing-border > tbody")
 			.children()
-			.text()
-			.trim();
+			.text();
 	});
 };
 
 // response part
 bot.on("message", (payload, chat, data) => {
-	console.log(data);
-	chat.say(`Echo: ${payload.message.text}`);
+	if (!data.captured) {
+		chat.say(`Echo: ${payload.message.text}`);
+	}
 });
 
 bot.hear("/help", (payload, chat) => {
@@ -54,17 +54,21 @@ bot.hear("/help", (payload, chat) => {
 });
 
 bot.hear("D > N", async (payload, chat) => {
+	console.log(typeof output, output);
 	chat.say(output);
 });
 
 bot.hear("N > D", async (payload, chat) => {
+	console.log(typeof output, output);
 	chat.say(output);
 });
 
 bot.hear("K > N", async (payload, chat) => {
+	console.log(typeof output, output);
 	chat.say(output);
 });
 
 bot.hear("N > K", async (payload, chat) => {
+	console.log(typeof output, output);
 	chat.say(output);
 });
