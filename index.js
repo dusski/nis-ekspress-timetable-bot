@@ -14,5 +14,5 @@ bot.start(process.env.PORT);
 
 bot.on("message", (payload, chat) => {
 	const text = payload.message.text;
-	chat.say(`Echo: ${text}`);
+	chat.say(`Echo: ${text}, sent from the newest bot`);
 });
