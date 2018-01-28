@@ -38,6 +38,8 @@ let getBuses = async url => {
 
 		console.log(output);
 	});
+
+	return true;
 };
 
 // response part
@@ -56,7 +58,7 @@ bot.hear("/help", (payload, chat) => {
 });
 
 bot.hear("D > N", async (payload, chat) => {
-	getBuses(D_to_N);
+	await getBuses(D_to_N);
 	chat.say(output);
 });
 
