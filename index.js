@@ -26,18 +26,20 @@ const D_to_N =
 	N_to_K =
 		"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=NI%C5%A0&ToPointName=KO%C4%8CANE+R.&FromPointNameId=2710&ToPointNameId=5443&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
 
-let getBuses = url => {
-	request(url, async (err, res, html) => {
+let getBuses = async url => {
+	await request(url, (err, res, html) => {
 		if (err) throw err;
 
 		let $ = cheerio.load(html);
 
-		output = await $(".listing-border > tbody")
+		output = $(".listing-border > tbody")
 			.children()
 			.text();
 
 		console.log(output);
 	});
+
+	return true;
 };
 
 // response part
@@ -56,7 +58,7 @@ bot.hear("/help", (payload, chat) => {
 });
 
 bot.hear("D > N", async (payload, chat) => {
-	getBuses(D_to_N);
+	await getBuses(D_to_N);
 	chat.say(output);
 });
 
