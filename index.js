@@ -13,40 +13,23 @@ const bot = new BootBot({
 });
 
 bot.start(process.env.PORT);
-let json = { title: "", release: "", rating: "" };
+let output;
 
 // web scraping part
-const url = "http://www.imdb.com/title/tt1229340/";
+const url = "http://195.178.51.120/WebReservations/Home/timetable";
 request(url, (err, res, html) => {
 	if (err) throw err;
 
 	let $ = cheerio.load(html);
 
-	$(".header").filter(function() {
-		let data = $(this);
-		json.title = data
-			.children()
-			.first()
-			.text();
-
-		json.release = data
-			.children()
-			.last()
-			.children()
-			.text();
-	});
-
-	$(".star-box-giga-star").filter(function() {
-		var data = $(this);
-		json.rating = data.text();
-	});
+	output = JSON.stringify($);
 });
 
 // response part
 bot.on("message", (payload, chat) => {
 	const text = payload.message.text;
 	if (text === "/get-movie") {
-		chat.say(JSON.stringify(json));
+		chat.say(JSON.stringify(output));
 	} else {
 		chat.say(`Echo: ${text}`);
 	}
