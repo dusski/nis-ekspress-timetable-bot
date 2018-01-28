@@ -29,7 +29,7 @@ request(url, (err, res, html) => {
 bot.on("message", (payload, chat) => {
 	const text = payload.message.text;
 	if (text === "/get-movie") {
-		chat.say(JSON.stringify(output));
+		chat.say(output);
 	} else {
 		chat.say(`Echo: ${text}`);
 	}
