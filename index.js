@@ -13,9 +13,8 @@ const bot = new BootBot({
 });
 
 bot.start(process.env.PORT);
-bot.deletePersistentMenu();
 bot.deleteGetStartedButton();
-// response part
+
 bot.on("message", (payload, chat, data) => {
 	if (!data.captured) {
 		chat.say(`Echo: ${payload.message.text}`);
