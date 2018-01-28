@@ -44,4 +44,4 @@ bot.on("message", (payload, chat) => {
 	chat.say(`Echo: ${text}`);
 });
 
-bot.setPersistentMenu(["D > N", "N > D", "K > N", "N > K"]);
+bot.setPersistentMenu(["D > N", "N > D"]);
