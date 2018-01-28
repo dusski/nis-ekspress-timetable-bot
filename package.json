@@ -5,7 +5,9 @@
   "main": "index.js",
   "dependencies": {
     "bootbot": "^1.0.14",
-    "dotenv": "^4.0.0"
+    "cheerio": "^1.0.0-rc.2",
+    "dotenv": "^4.0.0",
+    "request": "^2.83.0"
   },
   "devDependencies": {},
   "scripts": {
