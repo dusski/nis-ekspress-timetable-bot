@@ -13,7 +13,11 @@ const bot = new BootBot({
 });
 
 bot.start(process.env.PORT);
-bot.setGetStartedButton("Choose the apropriate direction:");
+bot.setGetStartedButton(`You can chose one of the following options:
+- D > N (Doljevac > Niš)
+- N > D (Niš > Doljevac)
+- K > N (Kočane R. > Niš)
+- N > K (Niš > Kočane R.)`);
 let output;
 
 // web scraping part
@@ -44,4 +48,26 @@ bot.on("message", (payload, chat) => {
 	chat.say(`Echo: ${payload.message.text}`);
 });
 
-bot.setPersistentMenu(["D > N", "N > D", "K > N", "N > K"]);
+bot.hear("/help", (payload, chat) => {
+	chat.say(`You can chose one of the following options:
+    - D > N (Doljevac > Niš)
+    - N > D (Niš > Doljevac)
+    - K > N (Kočane R. > Niš)
+    - N > K (Niš > Kočane R.)`);
+});
+
+bot.hear("D > N", (payload, chat) => {
+	chat.say(getBusses(D_to_N));
+});
+
+bot.hear("N > D", (payload, chat) => {
+	chat.say(getBusses(N_to_D));
+});
+
+bot.hear("K > N", (payload, chat) => {
+	chat.say(getBusses(K_to_N));
+});
+
+bot.hear("N > K", (payload, chat) => {
+	chat.say(getBusses(N_to_K));
+});
