@@ -21,6 +21,8 @@ bot.on("message", (payload, chat, data) => {
 	}
 });
 
+// data: https://repl.it/repls/RoundThoughtfulAfricanelephant
+
 bot.hear("/help", (payload, chat) => {
 	chat.say(`You can chose one of the following options:
     - D > N (Doljevac > Niš)
@@ -40,6 +42,8 @@ bot.hear("D > N", (payload, chat) => {
 
 		const output = $(".listing-border > tbody")
 			.children()
+			.toArray()
+			.slice(0, 2)
 			.text();
 
 		chat.say(output);
@@ -57,6 +61,8 @@ bot.hear("N > D", async (payload, chat) => {
 
 		const output = $(".listing-border > tbody")
 			.children()
+			.toArray()
+			.slice(0, 2)
 			.text();
 
 		chat.say(output);
@@ -74,6 +80,8 @@ bot.hear("K > N", async (payload, chat) => {
 
 		const output = $(".listing-border > tbody")
 			.children()
+			.toArray()
+			.slice(0, 2)
 			.text();
 
 		chat.say(output);
@@ -91,6 +99,8 @@ bot.hear("N > K", async (payload, chat) => {
 
 		const output = $(".listing-border > tbody")
 			.children()
+			.toArray()
+			.slice(0, 2)
 			.text();
 
 		chat.say(output);
