@@ -3,7 +3,7 @@
 require("dotenv").load();
 
 const BootBot = require("bootbot"),
-	request = require("request"),  // axios (instead of this)
+	request = require("request"), // axios (instead of this)
 	cheerio = require("cheerio");
 
 const bot = new BootBot({
@@ -42,8 +42,7 @@ bot.hear("D > N", (payload, chat) => {
 
 		const output = $(".listing-border > tbody")
 			.children()
-			.toArray()
-			.slice(0, 2)
+			.map((i, el) => (i < 3 ? el : null))
 			.text();
 
 		chat.say(output);
@@ -61,8 +60,7 @@ bot.hear("N > D", async (payload, chat) => {
 
 		const output = $(".listing-border > tbody")
 			.children()
-			.toArray()
-			.slice(0, 2)
+			.map((i, el) => (i < 3 ? el : null))
 			.text();
 
 		chat.say(output);
@@ -80,8 +78,7 @@ bot.hear("K > N", async (payload, chat) => {
 
 		const output = $(".listing-border > tbody")
 			.children()
-			.toArray()
-			.slice(0, 2)
+			.map((i, el) => (i < 3 ? el : null))
 			.text();
 
 		chat.say(output);
@@ -99,8 +96,7 @@ bot.hear("N > K", async (payload, chat) => {
 
 		const output = $(".listing-border > tbody")
 			.children()
-			.toArray()
-			.slice(0, 2)
+			.map((i, el) => (i < 3 ? el : null))
 			.text();
 
 		chat.say(output);
