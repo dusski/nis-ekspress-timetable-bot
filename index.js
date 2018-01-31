@@ -3,7 +3,7 @@
 require("dotenv").load();
 
 const BootBot = require("bootbot"),
-	request = require("request"),
+	request = require("request"),  // axios (instead of this)
 	cheerio = require("cheerio");
 
 const bot = new BootBot({
