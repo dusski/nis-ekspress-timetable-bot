@@ -40,11 +40,14 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 						i < (numberOfBuses ? numberOfBuses : 3) ? el : null
 				)
 				.text();
+
+			console.log("output from axios response: ", output);
 		})
 		.catch(error => {
 			if (error) console.error("Error with the response", error);
 		});
 
+	console.log("output before returning: ", output);
 	return output;
 }
 
