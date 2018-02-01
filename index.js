@@ -8,6 +8,8 @@ const BootBot = require("bootbot"),
 	moment = require("moment"),
 	cheerio = require("cheerio");
 
+const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
+
 const bot = new BootBot({
 	accessToken: process.env.FB_ACCESS_TOKEN,
 	verifyToken: process.env.FB_VERIFY_TOKEN,
@@ -20,6 +22,10 @@ bot.deleteGetStartedButton();
 bot.on("message", (payload, chat, data) => {
 	if (!data.captured) {
 		chat.say(`Echo: ${payload.message.text}`);
+	}
+
+	if ((payload.message.text = "/bus")) {
+		chat.say("Getting your buses!");
 	}
 });
 
@@ -34,13 +40,10 @@ bot.hear("/help", (payload, chat) => {
 });
 
 bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, (payload, chat) => {
-	const url =
-		"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=DOLJEVAC&ToPointName=NI%C5%A0&FromPointNameId=3088&ToPointNameId=2710&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
-
 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
 	axios
-		.get("http://195.178.51.120/WebReservations/Home/SearchForJourneys", {
+		.get(base_url, {
 			params: {
 				inNext: 1,
 				timeFlagNow: true,
