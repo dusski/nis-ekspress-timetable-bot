@@ -31,26 +31,27 @@ bot.hear("/help", (payload, chat) => {
     - N > K (Niš > Kočane R.)`);
 });
 
-bot.hear(
-	["D > N", "D>N", "DN", "D N"],
-	(payload, chat) => {
-		const url =
-			"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=DOLJEVAC&ToPointName=NI%C5%A0&FromPointNameId=3088&ToPointNameId=2710&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
+bot.hear(["D > N", "D>N", "DN", "D N"], (payload, chat) => {
+	const url =
+		"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=DOLJEVAC&ToPointName=NI%C5%A0&FromPointNameId=3088&ToPointNameId=2710&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
 
-		request(url, (err, res, html) => {
-			if (err) throw err;
+	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
-			let $ = cheerio.load(html);
+	request(url, (err, res, html) => {
+		if (err) throw err;
 
-			const output = $(".listing-border > tbody")
-				.children()
-				.map((i, el) => (i < 3 ? el : null))
-				.text();
+		let $ = cheerio.load(html);
 
-			chat.say(output);
-		});
-	}
-);
+		const output = $(".listing-border > tbody")
+			.children()
+			.map(
+				(i, el) => (i < (numberOfBuses ? numberOfBuses : 3) ? el : null)
+			)
+			.text();
+
+		chat.say(output);
+	});
+});
 
 bot.hear(
 	["N > D", "N>D", "n > d", "n>d", "nd", "ND", "n d", "N D"],
