@@ -76,10 +76,10 @@ bot.hear("/bus", (payload, chat) => {
 	// setting up /bus command
 });
 
-bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, (payload, chat) => {
+bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
-	chat.say(getBuses(base_url, "Doljevac", "Niš", numberOfBuses));
+	chat.say(await getBuses(base_url, "Doljevac", "Niš", numberOfBuses));
 });
 
 bot.hear(/([Nn]\s*>*\s*[Dd]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
