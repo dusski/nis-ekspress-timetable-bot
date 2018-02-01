@@ -10,8 +10,8 @@ const BootBot = require("bootbot"),
 
 const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 
-function getBuses(url, fromPointName, toPointName, numberOfBuses) {
-	axios
+async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
+	await axios
 		.get(url, {
 			params: {
 				inNext: 1,
@@ -31,13 +31,15 @@ function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 		.then(response => {
 			let $ = cheerio.load(response.data);
 
-			return $(".listing-border > tbody")
+			let output = $(".listing-border > tbody")
 				.children()
 				.map(
 					(i, el) =>
 						i < (numberOfBuses ? numberOfBuses : 3) ? el : null
 				)
 				.text();
+
+			return output;
 		})
 		.catch(error => {
 			if (error) console.error("Error with the response", error);
