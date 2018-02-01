@@ -31,7 +31,7 @@ bot.hear("/help", (payload, chat) => {
 	ND - gets default number of buses (3) from Niš to Doljevac`);
 });
 
-bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)/g, (payload, chat) => {
+bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, (payload, chat) => {
 	const url =
 		"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=DOLJEVAC&ToPointName=NI%C5%A0&FromPointNameId=3088&ToPointNameId=2710&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
 
@@ -53,7 +53,7 @@ bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)/g, (payload, chat) => {
 	});
 });
 
-bot.hear(/([Nn]\s*>*\s*[Dd]\s*\d*)/g, async (payload, chat) => {
+bot.hear(/([Nn]\s*>*\s*[Dd]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
 	const url =
 		"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=NI%C5%A0&ToPointName=DOLJEVAC&FromPointNameId=2710&ToPointNameId=3088&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
 
@@ -75,7 +75,7 @@ bot.hear(/([Nn]\s*>*\s*[Dd]\s*\d*)/g, async (payload, chat) => {
 	});
 });
 
-bot.hear(/([Kk]\s*>*\s*[Nn]\s*\d*)/g, async (payload, chat) => {
+bot.hear(/([Kk]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
 	const url =
 		"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=KO%C4%8CANE+R.&ToPointName=NI%C5%A0&FromPointNameId=5443&ToPointNameId=2710&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
 
@@ -97,7 +97,7 @@ bot.hear(/([Kk]\s*>*\s*[Nn]\s*\d*)/g, async (payload, chat) => {
 	});
 });
 
-bot.hear(/([Nn]\s*>*\s*[Kk]\s*\d*)/g, async (payload, chat) => {
+bot.hear(/([Nn]\s*>*\s*[Kk]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
 	const url =
 		"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=NI%C5%A0&ToPointName=KO%C4%8CANE+R.&FromPointNameId=2710&ToPointNameId=5443&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
 
