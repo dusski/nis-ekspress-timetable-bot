@@ -66,7 +66,7 @@ bot.hear("/help", (payload, chat) => {
 	ND - gets default number of buses (3) from Niš to Doljevac`);
 });
 
-bot.hear(/\/bus\s*/g, (payload, chat) => {
+bot.hear(/\*bus\s/g, (payload, chat) => {
 	// setting up /bus command
 	console.log(payload.message.text.split(" "));
 });
