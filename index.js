@@ -79,7 +79,14 @@ bot.hear("/bus", (payload, chat) => {
 bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
-	chat.say(await getBuses(base_url, "Doljevac", "Niš", numberOfBuses));
+	let listOfBuses = await getBuses(
+		base_url,
+		"Doljevac",
+		"Niš",
+		numberOfBuses
+	);
+
+	chat.say(listOfBuses);
 });
 
 bot.hear(/([Nn]\s*>*\s*[Dd]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
