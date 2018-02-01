@@ -53,65 +53,68 @@ bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)/g, (payload, chat) => {
 	});
 });
 
-bot.hear(
-	["N > D", "N>D", "n > d", "n>d", "nd", "ND", "n d", "N D"],
-	async (payload, chat) => {
-		const url =
-			"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=NI%C5%A0&ToPointName=DOLJEVAC&FromPointNameId=2710&ToPointNameId=3088&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
+bot.hear(/([Nn]\s*>*\s*[Dd]\s*\d*)/g, async (payload, chat) => {
+	const url =
+		"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=NI%C5%A0&ToPointName=DOLJEVAC&FromPointNameId=2710&ToPointNameId=3088&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
 
-		request(url, (err, res, html) => {
-			if (err) throw err;
+	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
-			let $ = cheerio.load(html);
+	request(url, (err, res, html) => {
+		if (err) throw err;
 
-			const output = $(".listing-border > tbody")
-				.children()
-				.map((i, el) => (i < 3 ? el : null))
-				.text();
+		let $ = cheerio.load(html);
 
-			chat.say(output);
-		});
-	}
-);
+		const output = $(".listing-border > tbody")
+			.children()
+			.map(
+				(i, el) => (i < (numberOfBuses ? numberOfBuses : 3) ? el : null)
+			)
+			.text();
 
-bot.hear(
-	["K > N", "K>N", "k > n", "k>n", "kn", "KN", "k n", "K N"],
-	async (payload, chat) => {
-		const url =
-			"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=KO%C4%8CANE+R.&ToPointName=NI%C5%A0&FromPointNameId=5443&ToPointNameId=2710&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
+		chat.say(output);
+	});
+});
 
-		request(url, (err, res, html) => {
-			if (err) throw err;
+bot.hear(/([Kk]\s*>*\s*[Nn]\s*\d*)/g, async (payload, chat) => {
+	const url =
+		"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=KO%C4%8CANE+R.&ToPointName=NI%C5%A0&FromPointNameId=5443&ToPointNameId=2710&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
 
-			let $ = cheerio.load(html);
+	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
-			const output = $(".listing-border > tbody")
-				.children()
-				.map((i, el) => (i < 3 ? el : null))
-				.text();
+	request(url, (err, res, html) => {
+		if (err) throw err;
 
-			chat.say(output);
-		});
-	}
-);
+		let $ = cheerio.load(html);
 
-bot.hear(
-	["N > K", "N>K", "n > k", "n>k", "nk", "NK", "n k", "N K"],
-	async (payload, chat) => {
-		const url =
-			"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=NI%C5%A0&ToPointName=KO%C4%8CANE+R.&FromPointNameId=2710&ToPointNameId=5443&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
+		const output = $(".listing-border > tbody")
+			.children()
+			.map(
+				(i, el) => (i < (numberOfBuses ? numberOfBuses : 3) ? el : null)
+			)
+			.text();
 
-		request(url, (err, res, html) => {
-			if (err) throw err;
+		chat.say(output);
+	});
+});
 
-			let $ = cheerio.load(html);
+bot.hear(/([Nn]\s*>*\s*[Kk]\s*\d*)/g, async (payload, chat) => {
+	const url =
+		"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=NI%C5%A0&ToPointName=KO%C4%8CANE+R.&FromPointNameId=2710&ToPointNameId=5443&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
 
-			const output = $(".listing-border > tbody")
-				.children()
-				.map((i, el) => (i < 3 ? el : null))
-				.text();
+	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
-			chat.say(output);
-		});
-	}
-);
+	request(url, (err, res, html) => {
+		if (err) throw err;
+
+		let $ = cheerio.load(html);
+
+		const output = $(".listing-border > tbody")
+			.children()
+			.map(
+				(i, el) => (i < (numberOfBuses ? numberOfBuses : 3) ? el : null)
+			)
+			.text();
+
+		chat.say(output);
+	});
+});
