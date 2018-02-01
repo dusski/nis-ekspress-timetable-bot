@@ -11,43 +11,31 @@ const BootBot = require("bootbot"),
 const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 
 async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
-	let output = undefined;
+	let buses = await axios.get(url, {
+		params: {
+			inNext: 1,
+			timeFlagNow: true,
+			tb_calendar: moment().format("DD.MM.YYYY"),
+			tb_FromTime: moment().format("HH:mm"),
+			FromPointName: fromPointName.toUpperCase(),
+			ToPointName: toPointName.toUpperCase(),
+			FromPointNameId: 3088,
+			ToPointNameId: 2710,
+			filterPassengerId: 1,
+			RoundtripProcessing: false,
+			ValidityUnlimited: true,
+			Timetable: true
+		}
+	});
 
-	axios
-		.get(url, {
-			params: {
-				inNext: 1,
-				timeFlagNow: true,
-				tb_calendar: moment().format("DD.MM.YYYY"),
-				tb_FromTime: moment().format("HH:mm"),
-				FromPointName: fromPointName.toUpperCase(),
-				ToPointName: toPointName.toUpperCase(),
-				FromPointNameId: 3088,
-				ToPointNameId: 2710,
-				filterPassengerId: 1,
-				RoundtripProcessing: false,
-				ValidityUnlimited: true,
-				Timetable: true
-			}
-		})
-		.then(response => {
-			let $ = cheerio.load(response.data);
+	let $ = cheerio.load(busses);
 
-			output = $(".listing-border > tbody")
-				.children()
-				.map(
-					(i, el) =>
-						i < (numberOfBuses ? numberOfBuses : 3) ? el : null
-				)
-				.text();
+	let output = $(".listing-border > tbody")
+		.children()
+		.map((i, el) => (i < (numberOfBuses ? numberOfBuses : 3) ? el : null))
+		.text();
 
-			console.log("output from axios response: ", output);
-		})
-		.catch(error => {
-			if (error) console.error("Error with the response", error);
-		});
-
-	console.log("output before returning: ", output);
+	console.log("output from axios response: ", output);
 	return output;
 }
 
