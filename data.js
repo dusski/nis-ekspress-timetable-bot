@@ -1,4 +1,4 @@
-modules.exports = {
+module.exports = {
   "inex hotel": "4989",
   "22.decembar": "6407",
   "6 borova": "5825",
