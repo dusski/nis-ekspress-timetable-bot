@@ -28,7 +28,7 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 		}
 	});
 
-	let $ = cheerio.load(buses);
+	let $ = cheerio.load(buses.data);
 
 	let output = $(".listing-border > tbody")
 		.children()
