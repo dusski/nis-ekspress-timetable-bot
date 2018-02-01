@@ -31,7 +31,7 @@ bot.hear("/help", (payload, chat) => {
     - N > K (Niš > Kočane R.)`);
 });
 
-bot.hear(["D > N", "D>N", "DN", "D N"], (payload, chat) => {
+bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)/g, (payload, chat) => {
 	const url =
 		"http://195.178.51.120/WebReservations/Home/SearchForJourneys?inNext=1&timeFlagNow=true&tb_calendar=28.01.2018&tb_FromTime=00%3A00&FromPointName=DOLJEVAC&ToPointName=NI%C5%A0&FromPointNameId=3088&ToPointNameId=2710&filterPassengerId=1&RoundtripProcessing=false&ValidityUnlimited=True&Timetable=True";
 
