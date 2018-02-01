@@ -88,6 +88,8 @@ bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
 		numberOfBuses
 	);
 
+	console.log(listOfBuses);
+
 	chat.say(listOfBuses);
 });
 
