@@ -1,7 +1,7 @@
 "use strict";
 
 require("dotenv").load();
-import * as data from "./data.js";
+const data = require("./data.js");
 
 const BootBot = require("bootbot"),
 	request = require("request"), // axios (instead of this)
