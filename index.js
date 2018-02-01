@@ -1,6 +1,7 @@
 "use strict";
 
 require("dotenv").load();
+import * as data from "./data.js";
 
 const BootBot = require("bootbot"),
 	request = require("request"), // axios (instead of this)
@@ -16,6 +17,7 @@ bot.start(process.env.PORT);
 bot.deleteGetStartedButton();
 
 bot.on("message", (payload, chat, data) => {
+	console.log(data.lines["doljevac"]);
 	if (!data.captured) {
 		chat.say(`Echo: ${payload.message.text}`);
 	}
