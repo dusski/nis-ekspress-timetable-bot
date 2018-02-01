@@ -24,11 +24,11 @@ bot.on("message", (payload, chat, data) => {
 // data: https://repl.it/repls/RoundThoughtfulAfricanelephant
 
 bot.hear("/help", (payload, chat) => {
-	chat.say(`You can chose one of the following options:
-    - D > N (Doljevac > Niš)
-    - N > D (Niš > Doljevac)
-    - K > N (Kočane R. > Niš)
-    - N > K (Niš > Kočane R.)`);
+	chat.say(`You can type in any dual combination of the letters K, N and D to get the first 3 buses for that line. If your command is followed by a number, it will display that number of buses. (max number is 10)
+	For example:
+	Dn 5 - gets 5 buses from Doljevac to Niš
+	nK 10 - gets 10 buses from Kočane to Niš
+	ND - gets default number of buses (3) from Niš to Doljevac`);
 });
 
 bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)/g, (payload, chat) => {
