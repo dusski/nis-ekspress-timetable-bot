@@ -57,7 +57,7 @@ bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, (payload, chat) => {
 			}
 		})
 		.then(response => {
-			let $ = cheerio.load(html);
+			let $ = cheerio.load(response);
 
 			const output = $(".listing-border > tbody")
 				.children()
