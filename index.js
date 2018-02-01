@@ -10,6 +10,40 @@ const BootBot = require("bootbot"),
 
 const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 
+function getBuses(url, fromPointName, toPointName, numberOfBuses) {
+	axios
+		.get(url, {
+			params: {
+				inNext: 1,
+				timeFlagNow: true,
+				tb_calendar: moment().format("DD.MM.YYYY"),
+				tb_FromTime: moment().format("HH:mm"),
+				FromPointName: fromPointName.toUpperCase(),
+				ToPointName: toPointName.toUpperCase(),
+				FromPointNameId: 3088,
+				ToPointNameId: 2710,
+				filterPassengerId: 1,
+				RoundtripProcessing: false,
+				ValidityUnlimited: true,
+				Timetable: true
+			}
+		})
+		.then(response => {
+			let $ = cheerio.load(response.data);
+
+			return $(".listing-border > tbody")
+				.children()
+				.map(
+					(i, el) =>
+						i < (numberOfBuses ? numberOfBuses : 3) ? el : null
+				)
+				.text();
+		})
+		.catch(error => {
+			if (error) console.error("Error with the response", error);
+		});
+}
+
 const bot = new BootBot({
 	accessToken: process.env.FB_ACCESS_TOKEN,
 	verifyToken: process.env.FB_VERIFY_TOKEN,
@@ -20,12 +54,11 @@ bot.start(process.env.PORT);
 bot.deleteGetStartedButton();
 
 bot.on("message", (payload, chat, data) => {
+	// if ((payload.message.text = "/bus")) {
+	// 	chat.say("Getting your buses!");
+	// } else
 	if (!data.captured) {
 		chat.say(`Echo: ${payload.message.text}`);
-	}
-
-	if ((payload.message.text = "/bus")) {
-		chat.say("Getting your buses!");
 	}
 });
 
@@ -39,57 +72,14 @@ bot.hear("/help", (payload, chat) => {
 	ND - gets default number of buses (3) from Niš to Doljevac`);
 });
 
+bot.hear("/bus", (payload, chat) => {
+	// setting up /bus command
+});
+
 bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, (payload, chat) => {
 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
-	axios
-		.get(base_url, {
-			params: {
-				inNext: 1,
-				timeFlagNow: true,
-				tb_calendar: moment().format("DD.MM.YYYY"),
-				tb_FromTime: moment().format("HH:mm"),
-				FromPointName: "DOLJEVAC",
-				ToPointName: "NIŠ",
-				FromPointNameId: 3088,
-				ToPointNameId: 2710,
-				filterPassengerId: 1,
-				RoundtripProcessing: false,
-				ValidityUnlimited: true,
-				Timetable: true
-			}
-		})
-		.then(response => {
-			let $ = cheerio.load(response.data);
-
-			const output = $(".listing-border > tbody")
-				.children()
-				.map(
-					(i, el) =>
-						i < (numberOfBuses ? numberOfBuses : 3) ? el : null
-				)
-				.text();
-
-			chat.say(output);
-		})
-		.catch(error => {
-			if (error) throw error;
-		});
-
-	// request(url, (err, res, html) => {
-	// 	if (err) throw err;
-
-	// 	let $ = cheerio.load(html);
-
-	// 	const output = $(".listing-border > tbody")
-	// 		.children()
-	// 		.map(
-	// 			(i, el) => (i < (numberOfBuses ? numberOfBuses : 3) ? el : null)
-	// 		)
-	// 		.text();
-
-	// 	chat.say(output);
-	// });
+	chat.say(getBuses(base_url, "Doljevac", "Niš", numberOfBuses));
 });
 
 bot.hear(/([Nn]\s*>*\s*[Dd]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
