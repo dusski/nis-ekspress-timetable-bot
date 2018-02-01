@@ -35,7 +35,6 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 		.map((i, el) => (i < (numberOfBuses ? numberOfBuses : 3) ? el : null))
 		.text();
 
-	console.log("output from axios response: ", output);
 	return output;
 }
 
@@ -67,7 +66,7 @@ bot.hear("/help", (payload, chat) => {
 	ND - gets default number of buses (3) from Niš to Doljevac`);
 });
 
-bot.hear("/bus", (payload, chat) => {
+bot.hear(/\/bus\s*/g, (payload, chat) => {
 	// setting up /bus command
 	console.log(payload.message.text.split(" "));
 });
