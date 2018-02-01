@@ -3,7 +3,9 @@
 require("dotenv").load();
 
 const BootBot = require("bootbot"),
-	request = require("request"), // axios (instead of this)
+	request = require("request"),
+	axios = require("axios"),
+	moment = require("moment"),
 	cheerio = require("cheerio");
 
 const bot = new BootBot({
@@ -37,20 +39,54 @@ bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, (payload, chat) => {
 
 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
-	request(url, (err, res, html) => {
-		if (err) throw err;
+	axios
+		.get("http://195.178.51.120/WebReservations/Home/SearchForJourneys", {
+			params: {
+				inNext: 1,
+				timeFlagNow: true,
+				tb_calendar: moment().format("DD.MM.YYYY"),
+				tb_FromTime: moment().format("HH:mm"),
+				FromPointName: "DOLJEVAC",
+				ToPointName: "NIŠ",
+				FromPointNameId: 3088,
+				ToPointNameId: 2710,
+				filterPassengerId: 1,
+				RoundtripProcessing: false,
+				ValidityUnlimited: true,
+				Timetable: true
+			}
+		})
+		.then(response => {
+			let $ = cheerio.load(html);
 
-		let $ = cheerio.load(html);
+			const output = $(".listing-border > tbody")
+				.children()
+				.map(
+					(i, el) =>
+						i < (numberOfBuses ? numberOfBuses : 3) ? el : null
+				)
+				.text();
 
-		const output = $(".listing-border > tbody")
-			.children()
-			.map(
-				(i, el) => (i < (numberOfBuses ? numberOfBuses : 3) ? el : null)
-			)
-			.text();
+			chat.say(output);
+		})
+		.catch(error => {
+			if (error) throw error;
+		});
 
-		chat.say(output);
-	});
+	// request(url, (err, res, html) => {
+	// 	if (err) throw err;
+
+	// 	let $ = cheerio.load(html);
+
+	// 	const output = $(".listing-border > tbody")
+	// 		.children()
+	// 		.map(
+	// 			(i, el) => (i < (numberOfBuses ? numberOfBuses : 3) ? el : null)
+	// 		)
+	// 		.text();
+
+	// 	chat.say(output);
+	// });
 });
 
 bot.hear(/([Nn]\s*>*\s*[Dd]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
