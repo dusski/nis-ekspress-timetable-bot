@@ -9,7 +9,8 @@ const BootBot = require("bootbot"),
 	cheerio = require("cheerio"),
 	fs = require("fs");
 
-const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
+const base_url = 
+"http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
 async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
@@ -98,7 +99,9 @@ bot.hear(/\!bus\s*/gi, (payload, chat) => {
 				const number_of_buses =
 					reply == "Skip" ? parseInt(reply) : false;
 				convo.set("number_of_buses", number_of_buses);
-				convo.say("").then(() => {
+				convo.say("Getting your 
+buses!", { typing: true }).then(() 
+=> {
 					sendBusList(convo);
 				});
 			}
