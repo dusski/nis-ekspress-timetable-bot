@@ -76,18 +76,7 @@ bot.hear("/help", (payload, chat) => {
 	You don't need to provide the number of buses, the default number to be displayed is 3.`);
 });
 
-bot.hear(/\!bus\s/g, async (payload, chat) => {
-	// setting up /bus command
-	const busRequest = payload.message.text.split(" ").slice(1);
-	const numberOfBuses =
-		busRequest.length > 2 ? parseInt(busRequest[2]) : false;
-
-	chat.say(
-		await getBuses(base_url, busRequest[0], busRequest[1], numberOfBuses)
-	);
-});
-
-bot.hear(/\!smart\s*/g, (payload, chat) => {
+bot.hear(/\!bus\s/gi, (payload, chat) => {
 	const sendBusList = async convo => {
 		convo.say(
 			await getBuses(
