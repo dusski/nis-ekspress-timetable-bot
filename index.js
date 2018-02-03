@@ -13,8 +13,9 @@ const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
 async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
-	if (buses[fromPointName.toLowerCase()]) return "No such departure station!";
-	if (buses[toPointName.toLowerCase()]) return "No such arival station!";
+	if (!buses[fromPointName.toLowerCase()])
+		return "No such departure station!";
+	if (!buses[toPointName.toLowerCase()]) return "No such arival station!";
 
 	let response = await axios.get(url, {
 		params: {
