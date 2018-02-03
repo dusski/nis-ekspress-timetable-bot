@@ -50,7 +50,7 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 		.map((i, el) => (i < busNumber ? el : null));
 	// .text();
 
-	return output;
+	return JSON.stringify(output);
 }
 
 const bot = new BootBot({
