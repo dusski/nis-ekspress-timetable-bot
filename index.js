@@ -98,7 +98,7 @@ bot.hear(/\!bus\s*/gi, (payload, chat) => {
 			(payload, convo) => {
 				const reply = payload.message.text;
 				const number_of_buses =
-					reply == "Skip" ? parseInt(reply) : false;
+					reply !== "Skip" ? parseInt(reply) : false;
 				convo.set("number_of_buses", number_of_buses);
 				convo.say("Getting your buses!", { typing: true }).then(() => {
 					sendBusList(convo);
