@@ -87,26 +87,53 @@ bot.hear(/\!bus\s/g, async (payload, chat) => {
 	);
 });
 
-// bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
-// 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
+bot.hear(/\!smart\s/g, (payload, chat) => {
+	chat.conversatioN(convo => {
+		getFromStation(convo);
+	});
 
-// 	chat.say(await getBuses(base_url, "Doljevac", "Niš", numberOfBuses));
-// });
+	const getFromStation = convo => {
+		convo.ask("Where are you traveling from?", (payload, convo) => {
+			const reply = payload.message.text;
+			convo.set("departure_station", reply).then(() => {
+				getToStation(convo);
+			});
+		});
+	};
 
-// bot.hear(/([Nn]\s*>*\s*[Dd]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
-// 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
+	const getToStation = convo => {
+		convo.ask("And where are you traveling to?", (payload, convo) => {
+			const reply = payload.message.text;
+			convo.set("arrival_station", reply).then(() => {
+				getNumberOfBuses(convo);
+			});
+		});
+	};
 
-// 	chat.say(await getBuses(base_url, "Niš", "Doljevac", numberOfBuses));
-// });
+	const getNumberOfBuses = convo => {
+		convo.ask(
+			{
+				text: "How many departures from now would you like to see?",
+				quickReplies: ["Skip"]
+			},
+			(payload, convo) => {
+				const reply = payload.message.text;
+				const number_of_buses =
+					reply == "Skip" ? parseInt(reply) : false;
+				convo.set("number_of_buses", number_of_buses);
+			}
+		);
+	};
 
-// bot.hear(/([Kk]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
-// 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
-
-// 	chat.say(await getBuses(base_url, "Kočane", "Niš", numberOfBuses));
-// });
-
-// bot.hear(/([Nn]\s*>*\s*[Kk]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
-// 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
-
-// 	chat.say(await getBuses(base_url, "Niš", "Kočane", numberOfBuses));
-// });
+	const sendBusList = async convo => {
+		convo.say(
+			await getBuses(
+				base_url,
+				convo.get("departure_station"),
+				convo.get("arrival_station"),
+				convo.get("number_of_buses")
+			)
+		);
+		convo.end();
+	};
+});
