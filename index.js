@@ -13,7 +13,8 @@ const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
 async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
-	if (!buses[reply.toLowerCase()]) return "No such departure station!";
+	if (!buses[fromPointName.toLowerCase()])
+		return "No such departure station!";
 	if (!buses[toPointName.toLowerCase()]) return "No such arival station!";
 
 	console.log(
@@ -59,7 +60,7 @@ bot.deleteGetStartedButton();
 
 bot.on("message", (payload, chat, data) => {
 	if (!data.captured) {
-//		chat.say(`Echo: ${payload.message.text}`);
+		//		chat.say(`Echo: ${payload.message.text}`);
 	}
 });
 
