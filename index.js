@@ -47,8 +47,8 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 
 	let output = $(".listing-border > tbody")
 		.children()
-		// .map((i, el) => (i < busNumber ? el : null))
-		.html();
+		.map((i, el) => (i < busNumber ? el : null))
+		.text();
 
 	return output;
 }
