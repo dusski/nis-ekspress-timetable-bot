@@ -9,8 +9,7 @@ const BootBot = require("bootbot"),
 	cheerio = require("cheerio"),
 	fs = require("fs");
 
-const base_url = 
-"http://195.178.51.120/WebReservations/Home/SearchForJourneys";
+const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
 async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
@@ -64,9 +63,6 @@ bot.on("message", (payload, chat, data) => {
 	}
 });
 
-// data: https://repl.it/repls/RoundThoughtfulAfricanelephant
-// hadling buses: https://www.npmjs.com/package/unicode-escape
-
 bot.hear("/help", (payload, chat) => {
 	chat.say(
 		`For getting a bus, just type in the command "!bus" and answer the questions.
@@ -99,8 +95,7 @@ bot.hear(/\!bus\s*/gi, (payload, chat) => {
 				const number_of_buses =
 					reply == "Skip" ? parseInt(reply) : false;
 				convo.set("number_of_buses", number_of_buses);
-				convo.say("Getting your buses!", { typing: true }).then(() 
-=> {
+				convo.say("Getting your buses!", { typing: true }).then(() => {
 					sendBusList(convo);
 				});
 			}
