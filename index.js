@@ -111,7 +111,7 @@ bot.hear(/\!smart\s*/g, (payload, chat) => {
 				const number_of_buses =
 					reply == "Skip" ? parseInt(reply) : false;
 				convo.set("number_of_buses", number_of_buses);
-				convo.say().then(() => {
+				convo.say("").then(() => {
 					sendBusList(convo);
 				});
 			}
@@ -122,7 +122,7 @@ bot.hear(/\!smart\s*/g, (payload, chat) => {
 		convo.ask("And where are you traveling to?", (payload, convo) => {
 			const reply = payload.message.text;
 			convo.set("arrival_station", reply);
-			convo.say().then(() => {
+			convo.say(`Arrival station set to: ${reply}`).then(() => {
 				getNumberOfBuses(convo);
 			});
 		});
@@ -132,7 +132,7 @@ bot.hear(/\!smart\s*/g, (payload, chat) => {
 		convo.ask("Where are you traveling from?", (payload, convo) => {
 			const reply = payload.message.text;
 			convo.set("departure_station", reply);
-			convo.say().then(() => {
+			convo.say(`Departure station set to: ${reply}`).then(() => {
 				getToStation(convo);
 			});
 		});
