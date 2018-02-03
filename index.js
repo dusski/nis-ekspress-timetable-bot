@@ -17,6 +17,10 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 		return "No such departure station!";
 	if (!buses[toPointName.toLowerCase()]) return "No such arival station!";
 
+	const busNumber = numberOfBuses
+		? numberOfBuses > 9 ? 10 : numberOfBuses
+		: 3;
+
 	console.log(
 		`New request: ${fromPointName} => ${toPointName} - ${numberOfBuses} (time: ${moment().format(
 			"HH:mm"
@@ -43,7 +47,7 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 
 	let output = $(".listing-border > tbody")
 		.children()
-		.map((i, el) => (i < (numberOfBuses ? numberOfBuses : 3) ? el : null))
+		.map((i, el) => (i < busNumber ? el : null))
 		.text();
 
 	return output;
