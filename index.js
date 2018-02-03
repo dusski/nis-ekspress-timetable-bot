@@ -6,24 +6,29 @@ const BootBot = require("bootbot"),
 	request = require("request"),
 	axios = require("axios"),
 	moment = require("moment"),
-	cheerio = require("cheerio");
+	cheerio = require("cheerio"),
+	fs = require("fs");
 
 const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
+const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
 async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
+	if (buses[fromPointName.toLowerCase()]) return "No such departure station!";
+	if (buses[toPointName.toLowerCase()]) return "No such arival station!";
+
 	let response = await axios.get(url, {
 		params: {
 			inNext: 1,
 			timeFlagNow: true,
-			tb_calendar: moment().format("DD.MM.YYYY"),
-			tb_FromTime: moment().format("HH:mm"),
-			FromPointName: fromPointName.toUpperCase(),
-			ToPointName: toPointName.toUpperCase(),
-			FromPointNameId: 3088,
-			ToPointNameId: 2710,
-			filterPassengerId: 1,
-			RoundtripProcessing: false,
-			ValidityUnlimited: true,
+			// tb_calendar: moment().format("DD.MM.YYYY"),
+			// tb_FromTime: moment().format("HH:mm"),
+			// FromPointName: fromPointName.toUpperCase(),
+			// ToPointName: toPointName.toUpperCase(),
+			FromPointNameId: buses[fromPointName.toLowerCase()],
+			ToPointNameId: buses[toPointName.toLowerCase()],
+			// filterPassengerId: 1,
+			// RoundtripProcessing: false,
+			// ValidityUnlimited: true,
 			Timetable: true
 		}
 	});
@@ -48,15 +53,13 @@ bot.start(process.env.PORT);
 bot.deleteGetStartedButton();
 
 bot.on("message", (payload, chat, data) => {
-	// if ((payload.message.text = "/bus")) {
-	// 	chat.say("Getting your buses!");
-	// } else
 	if (!data.captured) {
 		chat.say(`Echo: ${payload.message.text}`);
 	}
 });
 
 // data: https://repl.it/repls/RoundThoughtfulAfricanelephant
+// hadling buses: https://www.npmjs.com/package/unicode-escape
 
 bot.hear("/help", (payload, chat) => {
 	chat.say(`You can type in any dual combination of the letters K, N and D to get the first 3 buses for that line. If your command is followed by a number, it will display that number of buses. (max number is 10)
@@ -66,31 +69,37 @@ bot.hear("/help", (payload, chat) => {
 	ND - gets default number of buses (3) from Niš to Doljevac`);
 });
 
-bot.hear(/\*bus\s/g, (payload, chat) => {
+bot.hear(/\!bus\s/g, (payload, chat) => {
 	// setting up /bus command
-	console.log(payload.message.text.split(" "));
+	const busRequest = payload.message.text.split(" ").slice(1);
+	const numberOfBuses = (busRequest.length>2)
+							? parseInt(busRequest[3])
+							: false;
+
+	chat.say(await getBuses(base_url, busRequest[0], busRequest[1], numberOfBuses));
+
 });
 
-bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
-	let numberOfBuses = parseInt(payload.message.text.slice(-2));
+// bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
+// 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
-	chat.say(await getBuses(base_url, "Doljevac", "Niš", numberOfBuses));
-});
+// 	chat.say(await getBuses(base_url, "Doljevac", "Niš", numberOfBuses));
+// });
 
-bot.hear(/([Nn]\s*>*\s*[Dd]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
-	let numberOfBuses = parseInt(payload.message.text.slice(-2));
+// bot.hear(/([Nn]\s*>*\s*[Dd]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
+// 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
-	chat.say(await getBuses(base_url, "Niš", "Doljevac", numberOfBuses));
-});
+// 	chat.say(await getBuses(base_url, "Niš", "Doljevac", numberOfBuses));
+// });
 
-bot.hear(/([Kk]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
-	let numberOfBuses = parseInt(payload.message.text.slice(-2));
+// bot.hear(/([Kk]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
+// 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
-	chat.say(await getBuses(base_url, "Kočane", "Niš", numberOfBuses));
-});
+// 	chat.say(await getBuses(base_url, "Kočane", "Niš", numberOfBuses));
+// });
 
-bot.hear(/([Nn]\s*>*\s*[Kk]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
-	let numberOfBuses = parseInt(payload.message.text.slice(-2));
+// bot.hear(/([Nn]\s*>*\s*[Kk]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
+// 	let numberOfBuses = parseInt(payload.message.text.slice(-2));
 
-	chat.say(await getBuses(base_url, "Niš", "Kočane", numberOfBuses));
-});
+// 	chat.say(await getBuses(base_url, "Niš", "Kočane", numberOfBuses));
+// });
