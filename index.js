@@ -75,6 +75,7 @@ bot.hear("/help", (payload, chat) => {
 bot.hear(/\!bus\s/g, async (payload, chat) => {
 	// setting up /bus command
 	const busRequest = payload.message.text.split(" ").slice(1);
+	console.log(busRequest);
 	const numberOfBuses =
 		busRequest.length > 2 ? parseInt(busRequest[3]) : false;
 
