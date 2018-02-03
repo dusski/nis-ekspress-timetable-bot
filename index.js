@@ -105,12 +105,10 @@ bot.hear(/\!bus\s*/gi, (payload, chat) => {
 	const getToStation = convo => {
 		convo.ask("And where are you traveling to?", (payload, convo) => {
 			const reply = payload.message.text;
-			if (!buses[toPointName.toLowerCase()]) {
-				convo.say("No such arival station!");
-				convo.end();
-				return false;
+			if (!buses[reply.toLowerCase()]) {
+				convo.say("No such arival station! Please try again");
+				getFromStation(convo);
 			}
-
 			convo.set("arrival_station", reply);
 			convo.say(`Arrival station set to: ${reply}`).then(() => {
 				getNumberOfBuses(convo);
@@ -122,9 +120,8 @@ bot.hear(/\!bus\s*/gi, (payload, chat) => {
 		convo.ask("Where are you traveling from?", (payload, convo) => {
 			const reply = payload.message.text;
 			if (!buses[reply.toLowerCase()]) {
-				convo.say("No such departure station!");
-				convo.end();
-				return false;
+				convo.say("No such departure station! Please try again.");
+				getFromStation(convo);
 			}
 			convo.set("departure_station", reply);
 			convo.say(`Departure station set to: ${reply}`).then(() => {
