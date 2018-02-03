@@ -50,6 +50,7 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 		.map((i, el) => (i < busNumber ? el : null))
 		.text();
 
+	console.log(output);
 	return output;
 }
 
