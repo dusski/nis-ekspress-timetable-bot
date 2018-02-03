@@ -69,15 +69,15 @@ bot.hear("/help", (payload, chat) => {
 	ND - gets default number of buses (3) from Niš to Doljevac`);
 });
 
-bot.hear(/\!bus\s/g, (payload, chat) => {
+bot.hear(/\!bus\s/g, async (payload, chat) => {
 	// setting up /bus command
 	const busRequest = payload.message.text.split(" ").slice(1);
-	const numberOfBuses = (busRequest.length>2)
-							? parseInt(busRequest[3])
-							: false;
+	const numberOfBuses =
+		busRequest.length > 2 ? parseInt(busRequest[3]) : false;
 
-	chat.say(await getBuses(base_url, busRequest[0], busRequest[1], numberOfBuses));
-
+	chat.say(
+		await getBuses(base_url, busRequest[0], busRequest[1], numberOfBuses)
+	);
 });
 
 // bot.hear(/([Dd]\s*>*\s*[Nn]\s*\d*)(?![A-Za-z])/g, async (payload, chat) => {
