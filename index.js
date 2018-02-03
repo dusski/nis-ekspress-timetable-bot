@@ -87,7 +87,7 @@ bot.hear(/\!bus\s/g, async (payload, chat) => {
 	);
 });
 
-bot.hear(/\!smart\s/g, (payload, chat) => {
+bot.hear(/\!smart\s*/g, (payload, chat) => {
 	chat.conversatioN(convo => {
 		getFromStation(convo);
 	});
