@@ -17,6 +17,10 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 		return "No such departure station!";
 	if (!buses[toPointName.toLowerCase()]) return "No such arival station!";
 
+	console.log(
+		`New request: ${fromPointName} => ${toPointName} - ${numberOfBuses} (time: ${new Date()
+			.getHours + 1}`
+	);
 	let response = await axios.get(url, {
 		params: {
 			inNext: 1,
@@ -35,8 +39,6 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 	});
 
 	let $ = cheerio.load(response.data);
-
-	console.log(numberOfBuses);
 
 	let output = $(".listing-border > tbody")
 		.children()
@@ -75,11 +77,8 @@ bot.hear("/help", (payload, chat) => {
 bot.hear(/\!bus\s/g, async (payload, chat) => {
 	// setting up /bus command
 	const busRequest = payload.message.text.split(" ").slice(1);
-	console.log(busRequest);
 	const numberOfBuses =
-		busRequest.length > 2 ? parseInt(busRequest[3]) : false;
-
-	console.log(numberOfBuses);
+		busRequest.length > 2 ? parseInt(busRequest[2]) : false;
 
 	chat.say(
 		await getBuses(base_url, busRequest[0], busRequest[1], numberOfBuses)
