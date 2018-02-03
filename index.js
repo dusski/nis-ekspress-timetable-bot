@@ -68,12 +68,9 @@ bot.on("message", (payload, chat, data) => {
 // hadling buses: https://www.npmjs.com/package/unicode-escape
 
 bot.hear("/help", (payload, chat) => {
-	chat.say(`To get a list of buses, you can type the command "!bus" followed by any two station names in the following format:
-
-	!bus departure_station arrival_station number_of_buses
-	
-	You must type in the correct and exact station name (currently only one word station name will work)
-	You don't need to provide the number of buses, the default number to be displayed is 3.`);
+	chat.say(
+		`For getting a bus, just type in the command "!bus" and answer the questions`
+	);
 });
 
 bot.hear(/\!bus\s/gi, (payload, chat) => {
