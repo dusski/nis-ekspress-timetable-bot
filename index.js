@@ -88,13 +88,15 @@ bot.hear(/\!bus\s/g, async (payload, chat) => {
 });
 
 bot.hear(/\!smart\s*/g, (payload, chat) => {
+	let busRequest = new Map();
+
 	const sendBusList = async convo => {
 		convo.say(
 			await getBuses(
 				base_url,
-				convo.get("departure_station"),
-				convo.get("arrival_station"),
-				convo.get("number_of_buses")
+				busRequest.get("departure_station"),
+				busRequest.get("arrival_station"),
+				busRequest.get("number_of_buses")
 			)
 		);
 		convo.end();
@@ -110,7 +112,7 @@ bot.hear(/\!smart\s*/g, (payload, chat) => {
 				const reply = payload.message.text;
 				const number_of_buses =
 					reply == "Skip" ? parseInt(reply) : false;
-				convo.set("number_of_buses", number_of_buses);
+				busRequest.set("number_of_buses", number_of_buses);
 			}
 		);
 	};
@@ -118,7 +120,7 @@ bot.hear(/\!smart\s*/g, (payload, chat) => {
 	const getToStation = convo => {
 		convo.ask("And where are you traveling to?", (payload, convo) => {
 			const reply = payload.message.text;
-			convo.set("arrival_station", reply).then(() => {
+			busRequest.set("arrival_station", reply).then(() => {
 				getNumberOfBuses(convo);
 			});
 		});
@@ -127,7 +129,7 @@ bot.hear(/\!smart\s*/g, (payload, chat) => {
 	const getFromStation = convo => {
 		convo.ask("Where are you traveling from?", (payload, convo) => {
 			const reply = payload.message.text;
-			convo.set("departure_station", reply).then(() => {
+			busRequest.set("departure_station", reply).then(() => {
 				getToStation(convo);
 			});
 		});
