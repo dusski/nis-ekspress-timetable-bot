@@ -36,6 +36,8 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 
 	let $ = cheerio.load(response.data);
 
+	console.log(numberOfBuses);
+
 	let output = $(".listing-border > tbody")
 		.children()
 		.map((i, el) => (i < (numberOfBuses ? numberOfBuses : 3) ? el : null))
@@ -75,6 +77,8 @@ bot.hear(/\!bus\s/g, async (payload, chat) => {
 	const busRequest = payload.message.text.split(" ").slice(1);
 	const numberOfBuses =
 		busRequest.length > 2 ? parseInt(busRequest[3]) : false;
+
+	console.log(numberOfBuses);
 
 	chat.say(
 		await getBuses(base_url, busRequest[0], busRequest[1], numberOfBuses)
