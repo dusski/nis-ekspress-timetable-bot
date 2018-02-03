@@ -18,8 +18,9 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 	if (!buses[toPointName.toLowerCase()]) return "No such arival station!";
 
 	console.log(
-		`New request: ${fromPointName} => ${toPointName} - ${numberOfBuses} (time: ${new Date()
-			.getHours + 1}`
+		`New request: ${fromPointName} => ${toPointName} - ${numberOfBuses} (time: ${moment().format(
+			"HH:mm"
+		)})`
 	);
 	let response = await axios.get(url, {
 		params: {
