@@ -68,14 +68,15 @@ bot.on("message", (payload, chat, data) => {
 // hadling buses: https://www.npmjs.com/package/unicode-escape
 
 bot.hear("/help", (payload, chat) => {
-	chat.say(`You can type in any dual combination of the letters K, N and D to get the first 3 buses for that line. If your command is followed by a number, it will display that number of buses. (max number is 10)
-	For example:
-	Dn 5 - gets 5 buses from Doljevac to Niš
-	nK 10 - gets 10 buses from Kočane to Niš
-	ND - gets default number of buses (3) from Niš to Doljevac`);
+	chat.say(`To get a list of buses, you can type the command "!bus" followed by any two station names in the following format:
+
+	!bus departure_station arrival_station number_of_buses
+	
+	You must type in the correct and exact station name (currently only one word station name will work)
+	You don't need to provide the number of buses, the default number to be displayed is 3.`);
 });
 
-bot.hear(/\!bus\s/g, async (payload, chat) => {
+bot.hear("!bus", async (payload, chat) => {
 	// setting up /bus command
 	const busRequest = payload.message.text.split(" ").slice(1);
 	const numberOfBuses =
