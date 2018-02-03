@@ -13,8 +13,7 @@ const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
 async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
-	if (!buses[fromPointName.toLowerCase()])
-		return "No such departure station!";
+	if (!buses[reply.toLowerCase()]) return "No such departure station!";
 	if (!buses[toPointName.toLowerCase()]) return "No such arival station!";
 
 	console.log(
@@ -69,7 +68,9 @@ bot.on("message", (payload, chat, data) => {
 
 bot.hear("/help", (payload, chat) => {
 	chat.say(
-		`For getting a bus, just type in the command "!bus" and answer the questions`
+		`For getting a bus, just type in the command "!bus" and answer the questions.
+You can only type one station name at a time.
+You should also use full station names with extended Latin characters (š, ć, đ...).`
 	);
 });
 
@@ -107,6 +108,12 @@ bot.hear(/\!bus\s*/gi, (payload, chat) => {
 	const getToStation = convo => {
 		convo.ask("And where are you traveling to?", (payload, convo) => {
 			const reply = payload.message.text;
+			if (!buses[toPointName.toLowerCase()]) {
+				convo.say("No such arival station!");
+				convo.end();
+				return false;
+			}
+
 			convo.set("arrival_station", reply);
 			convo.say(`Arrival station set to: ${reply}`).then(() => {
 				getNumberOfBuses(convo);
@@ -117,6 +124,11 @@ bot.hear(/\!bus\s*/gi, (payload, chat) => {
 	const getFromStation = convo => {
 		convo.ask("Where are you traveling from?", (payload, convo) => {
 			const reply = payload.message.text;
+			if (!buses[reply.toLowerCase()]) {
+				convo.say("No such departure station!");
+				convo.end();
+				return false;
+			}
 			convo.set("departure_station", reply);
 			convo.say(`Departure station set to: ${reply}`).then(() => {
 				getToStation(convo);
