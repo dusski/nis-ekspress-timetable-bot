@@ -73,7 +73,7 @@ bot.hear("/help", (payload, chat) => {
 	);
 });
 
-bot.hear(/\!bus\s/gi, (payload, chat) => {
+bot.hear(/\!bus\s*/gi, (payload, chat) => {
 	const sendBusList = async convo => {
 		convo.say(
 			await getBuses(
