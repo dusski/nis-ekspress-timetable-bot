@@ -115,7 +115,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 		convo.ask(
 			{
 				text: "How many departures from now would you like to see?",
-				quickReplies: ["Skip"]
+				quickReplies: ["1", "5", "10", "Skip"]
 			},
 			(payload, convo) => {
 				const reply = payload.message.text;
@@ -136,11 +136,12 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 				convo.say("No such arival station! Please try again.");
 				reply = "";
 				getFromStation(convo);
+			} else {
+				convo.set("arrival_station", reply);
+				convo.say(`Arrival station set to: ${reply}`).then(() => {
+					getNumberOfBuses(convo);
+				});
 			}
-			convo.set("arrival_station", reply);
-			convo.say(`Arrival station set to: ${reply}`).then(() => {
-				getNumberOfBuses(convo);
-			});
 		});
 	};
 
@@ -149,13 +150,13 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 			const reply = payload.message.text;
 			if (!buses[reply.toLowerCase()]) {
 				convo.say("No such departure station! Please try again.");
-				reply = "";
 				getFromStation(convo);
+			} else {
+				convo.set("departure_station", reply);
+				convo.say(`Departure station set to: ${reply}`).then(() => {
+					getToStation(convo);
+				});
 			}
-			convo.set("departure_station", reply);
-			convo.say(`Departure station set to: ${reply}`).then(() => {
-				getToStation(convo);
-			});
 		});
 	};
 
