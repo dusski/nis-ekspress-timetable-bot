@@ -44,7 +44,7 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 
 	let $ = cheerio.load(response.data);
 
-	let busList = $(".listing-border > tbody")
+	let output = $(".listing-border > tbody")
 		.children()
 		.map((i, el) => (i < busNumber ? el : null))
 		.map((i, el) => {
