@@ -60,8 +60,8 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 
 			return `LINE: ${bus_line}
 DATE: ${departure_date_time.split(" ")[0]}
-🚌 ${departure_date_time.split(" ")[0]}
-${arrival_time}
+🚌 ${departure_date_time.split(" ")[1]}
+${arrival_time}🚌
 
 `;
 		})
