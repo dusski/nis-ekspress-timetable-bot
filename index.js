@@ -12,18 +12,13 @@ const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
 async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
-	if (!buses[fromPointName.toLowerCase()])
-		return "No such departure station!";
+	if (!buses[fromPointName.toLowerCase()]) return "No such departure station!";
 	if (!buses[toPointName.toLowerCase()]) return "No such arival station!";
 
-	const busNumber = numberOfBuses
-		? numberOfBuses > 9 ? 10 : numberOfBuses
-		: 3;
+	const busNumber = numberOfBuses ? (numberOfBuses > 9 ? 10 : numberOfBuses) : 3;
 
 	console.log(
-		`New request: ${fromPointName} => ${toPointName} - ${numberOfBuses} (time: ${moment().format(
-			"HH:mm"
-		)})`
+		`New request: ${fromPointName} => ${toPointName} - ${numberOfBuses} (time: ${moment().format("HH:mm")})`
 	);
 	let response = await axios.get(url, {
 		params: {
@@ -58,19 +53,25 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 				.load(el)(".columnPassengerArrivalTime")
 				.text();
 
-			return `${bus_line}
-Date: ${departure_date_time.split(" ")[0]}
-Departure: ${fromPointName.toUpperCase()} 🚌 ${
-				departure_date_time.split(" ")[1]
-			}
+			return {
+				title: bus_line,
+				subtitle: `Date: ${departure_date_time.split(" ")[0]}
+Departure: ${fromPointName.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
 Arival: ${arrival_time} 🚌 ${toPointName.toUpperCase()}
 
-`;
+`
+			};
+			// `${bus_line}
+			// Date: ${departure_date_time.split(" ")[0]}
+			// Departure: ${fromPointName.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
+			// Arival: ${arrival_time} 🚌 ${toPointName.toUpperCase()}
+
+			// `;
 		})
 		.get()
 		.join("");
 
-	return output;
+	return { cards: output };
 }
 
 const bot = new BootBot({
@@ -119,8 +120,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 			},
 			(payload, convo) => {
 				const reply = payload.message.text;
-				const number_of_buses =
-					reply !== "Skip" ? parseInt(reply) : false;
+				const number_of_buses = reply !== "Skip" ? parseInt(reply) : false;
 				convo.set("number_of_buses", number_of_buses);
 				convo.say("Getting your buses!", { typing: true }).then(() => {
 					sendBusList(convo);
