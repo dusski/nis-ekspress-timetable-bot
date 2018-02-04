@@ -3,7 +3,6 @@
 require("dotenv").load();
 
 const BootBot = require("bootbot"),
-	request = require("request"),
 	axios = require("axios"),
 	moment = require("moment"),
 	cheerio = require("cheerio"),
@@ -45,12 +44,30 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 
 	let $ = cheerio.load(response.data);
 
-	let output = $(".listing-border > tbody")
+	let busList = $(".listing-border > tbody")
 		.children()
 		.map((i, el) => (i < busNumber ? el : null))
-		.text();
+		.map((i, el) => {
+			let bus_line = cheerio
+				.load(el)(".columnRouteName")
+				.text();
+			let departure_date_time = cheerio
+				.load(el)(".columnDepartureTime")
+				.text();
+			let arrival_time = cheerio
+				.load(el)(".columnPassengerArrivalTime")
+				.text();
 
-	console.log(output);
+			return `LINE: ${bus_line}
+DATE: ${departure_date_time.split(" ")[0]}
+🚌 ${departure_date_time.split(" ")[0]}
+${arrival_time}
+
+`;
+		})
+		.get()
+		.join("");
+
 	return output;
 }
 
@@ -77,7 +94,9 @@ You should also use full station names with extended Latin characters (š, ć, �
 	);
 });
 
-bot.hear(/\!bus\s*/gi, (payload, chat) => {
+// TODO: Implement error handling
+
+bot.hear(/\!bus/gi, (payload, chat) => {
 	const sendBusList = async convo => {
 		convo.say(
 			await getBuses(
@@ -140,3 +159,9 @@ bot.hear(/\!bus\s*/gi, (payload, chat) => {
 		getFromStation(convo);
 	});
 });
+
+// bot.hear("*!test!*", (payload, chat) => {
+// 	chat.sendTemplate({
+
+// 	}, );
+// })
