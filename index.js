@@ -133,7 +133,8 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 		convo.ask("And where are you traveling to?", (payload, convo) => {
 			const reply = payload.message.text;
 			if (!buses[reply.toLowerCase()]) {
-				convo.say("No such arival station! Please try again");
+				convo.say("No such arival station! Please try again.");
+				reply = "";
 				getFromStation(convo);
 			}
 			convo.set("arrival_station", reply);
