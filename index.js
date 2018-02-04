@@ -58,10 +58,10 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 				.load(el)(".columnPassengerArrivalTime")
 				.text();
 
-			return `LINE: ${bus_line}
-DATE: ${departure_date_time.split(" ")[0]}
-🚌 ${departure_date_time.split(" ")[1]}
-${arrival_time}🚌
+			return `${bus_line}
+Date: ${departure_date_time.split(" ")[0]}
+Departure: 🚌 ${departure_date_time.split(" ")[1]}
+Arival: ${arrival_time} 🚌
 
 `;
 		})
