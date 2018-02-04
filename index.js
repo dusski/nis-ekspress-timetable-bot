@@ -148,8 +148,8 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 			const reply = payload.message.text;
 			if (!buses[reply.toLowerCase()]) {
 				convo.say("No such departure station! Please try again.");
+				reply = "";
 				getFromStation(convo);
-				continue;
 			}
 			convo.set("departure_station", reply);
 			convo.say(`Departure station set to: ${reply}`).then(() => {
