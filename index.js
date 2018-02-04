@@ -60,8 +60,10 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 
 			return `${bus_line}
 Date: ${departure_date_time.split(" ")[0]}
-Departure: 🚌 ${departure_date_time.split(" ")[1]}
-Arival: ${arrival_time} 🚌
+Departure: ${fromPointName.toUpperCase()} 🚌 ${
+				departure_date_time.split(" ")[1]
+			}
+Arival: ${arrival_time} 🚌 ${toPointName.toUpperCase()}
 
 `;
 		})
@@ -147,6 +149,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 			if (!buses[reply.toLowerCase()]) {
 				convo.say("No such departure station! Please try again.");
 				getFromStation(convo);
+				continue;
 			}
 			convo.set("departure_station", reply);
 			convo.say(`Departure station set to: ${reply}`).then(() => {
