@@ -130,10 +130,10 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 	};
 
 	const getToStation = convo => {
-		convo.ask("And where are you traveling to?", (payload, convo) => {
+		convo.ask("And where are you traveling to?", async (payload, convo) => {
 			const reply = payload.message.text;
 			if (!buses[reply.toLowerCase()]) {
-				convo.say("No such arival station! Please try again.");
+				await convo.say("No such arival station! Please try again.");
 				getFromStation(convo);
 			} else {
 				convo.set("arrival_station", reply);
@@ -145,10 +145,10 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 	};
 
 	const getFromStation = convo => {
-		convo.ask("Where are you traveling from?", (payload, convo) => {
+		convo.ask("Where are you traveling from?", async (payload, convo) => {
 			const reply = payload.message.text;
 			if (!buses[reply.toLowerCase()]) {
-				convo.say("No such departure station! Please try again.");
+				await convo.say("No such departure station! Please try again.");
 				getFromStation(convo);
 			} else {
 				convo.set("departure_station", reply);
