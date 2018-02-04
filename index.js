@@ -68,8 +68,8 @@ Arival: ${arrival_time} 🚌 ${toPointName.toUpperCase()}
 
 			// `;
 		})
-		.get()
-		.join("");
+		.get();
+	// .join("");
 
 	return { cards: output };
 }
