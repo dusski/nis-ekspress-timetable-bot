@@ -56,20 +56,14 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 			return {
 				title: bus_line,
 				subtitle: `Date: ${departure_date_time.split(" ")[0]}
+
 Departure: ${fromPointName.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
 Arival: ${arrival_time} 🚌 ${toPointName.toUpperCase()}
 
 `
 			};
-			// `${bus_line}
-			// Date: ${departure_date_time.split(" ")[0]}
-			// Departure: ${fromPointName.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
-			// Arival: ${arrival_time} 🚌 ${toPointName.toUpperCase()}
-
-			// `;
 		})
 		.get();
-	// .join("");
 
 	return { cards: output };
 }
