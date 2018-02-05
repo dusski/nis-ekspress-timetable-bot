@@ -213,6 +213,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 		convo.ask("Where are you traveling from?", async (payload, convo) => {
 			const userInput = payload.message.text;
 			const stationList = getStations(userInput);
+			console.log(stationList);
 			// TODO: instead of checking busses
 			// create a separate function that returns station name or an array of station names or empty array
 			if (stationList.length > 1) {
