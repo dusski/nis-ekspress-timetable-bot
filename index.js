@@ -73,7 +73,7 @@ function getStations(userInput) {
 		return station[0].substring(0, userInputStationLatinized.length) === userInputStationLatinized;
 	});
 
-	return true;
+	return matches;
 }
 
 async function getBuses(url, fromPointNameId, toPointNameId, numberOfBuses) {
