@@ -69,7 +69,7 @@ let latinize = string => {
 function getStations(userInput) {
 	// working with an array of station names that have latinized form [ [ "nis", "niš", 3667 ] ]
 	const userInputStationLatinized = latinize(userInput);
-	let matches = buses.map(station => {
+	let matches = buses.filter(station => {
 		return station[0].substring(0, userInputStationLatinized.length) === userInputStationLatinized;
 	});
 
