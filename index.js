@@ -220,10 +220,15 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 				let buttonList = stationList.map(station => {
 					return { type: "postback", title: station[2], postback: station[2] };
 				});
-				convo.ask({
-					text: "Which station did you mean?",
-					buttons: buttonList
-				});
+				convo.ask(
+					{
+						text: "Which station did you mean?",
+						buttons: buttonList
+					},
+					(payload, convo) => {
+						convo.say("wait...");
+					}
+				);
 			} else if (stationList.length == 1) {
 				convo.set("departure_station_id", stationList[0][3]);
 				convo.say(`Departure station set to: ${stationList[0][2].toUpperCase()}`).then(() => {
