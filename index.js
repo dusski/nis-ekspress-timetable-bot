@@ -76,14 +76,11 @@ function getStations(userInput) {
 	return matches;
 }
 
-async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
-	if (!buses[fromPointName.toLowerCase()]) return "No such departure station!";
-	if (!buses[toPointName.toLowerCase()]) return "No such arival station!";
-
-	const busNumber = numberOfBuses ? (numberOfBuses > 9 ? 10 : numberOfBuses) : 3;
+async function getBuses(url, fromPointNameId, toPointNameId, numberOfBuses) {
+	const numberOfBuses = numberOfBuses ? (numberOfBuses > 9 ? 10 : numberOfBuses) : 3;
 
 	console.log(
-		`New request: ${fromPointName} => ${toPointName} - ${numberOfBuses} (time: ${moment().format("HH:mm")})`
+		`New request: ${fromPointNameId} => ${toPointNameId} - ${numberOfBuses} (time: ${moment().format("HH:mm")})`
 	);
 	let response = await axios.get(url, {
 		params: {
@@ -93,8 +90,8 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 			// tb_FromTime: moment().format("HH:mm"),
 			// FromPointName: fromPointName.toUpperCase(),
 			// ToPointName: toPointName.toUpperCase(),
-			FromPointNameId: buses[fromPointName.toLowerCase()],
-			ToPointNameId: buses[toPointName.toLowerCase()],
+			FromPointNameId: fromPointNameId,
+			ToPointNameId: toPointNameId,
 			// filterPassengerId: 1,
 			// RoundtripProcessing: false,
 			// ValidityUnlimited: true,
@@ -106,7 +103,7 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 
 	let output = $(".listing-border > tbody")
 		.children()
-		.map((i, el) => (i < busNumber ? el : null))
+		.map((i, el) => (i < numberOfBuses ? el : null))
 		.map((i, el) => {
 			let bus_line = cheerio
 				.load(el)(".columnRouteName")
@@ -121,8 +118,8 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 			return {
 				title: bus_line,
 				subtitle: `Date: ${departure_date_time.split(" ")[0]}
-Departure: ${fromPointName.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
-Arival: ${arrival_time} 🚌 ${toPointName.toUpperCase()}
+Departure: ${fromPointNameId.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
+Arival: ${arrival_time} 🚌 ${toPointNameId.toUpperCase()}
 
 `
 			};
@@ -139,7 +136,6 @@ const bot = new BootBot({
 });
 
 bot.start(process.env.PORT);
-bot.deleteGetStartedButton();
 
 bot.on("message", (payload, chat, data) => {
 	if (!data.captured) {
@@ -162,8 +158,8 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 		convo.say(
 			await getBuses(
 				base_url,
-				convo.get("departure_station"),
-				convo.get("arrival_station"),
+				convo.get("departure_station_id"),
+				convo.get("arrival_station_id"),
 				convo.get("number_of_buses")
 			)
 		);
@@ -189,15 +185,26 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 
 	const getToStation = convo => {
 		convo.ask("And where are you traveling to?", async (payload, convo) => {
-			const reply = payload.message.text;
-			if (!buses[reply.toLowerCase()]) {
-				await convo.say("No such arival station! Please try again.");
-				getToStation(convo);
-			} else {
-				convo.set("arrival_station", reply);
-				convo.say(`Arrival station set to: ${reply}`).then(() => {
+			const userInput = payload.message.text;
+			const stationList = getStations(userInput);
+			// TODO: instead of checking busses
+			// create a separate function that returns station name or an array of station names or empty array
+			if (stationList.length > 1) {
+				let buttonList = stationList.map(station => {
+					return { type: "postback", title: station[2], postback: station[2] };
+				});
+				convo.ask({
+					text: "Which station did you mean?",
+					buttons: buttonList
+				});
+			} else if (stationList.length == 1) {
+				convo.set("arrival_station_id", stationList[0][3]);
+				convo.say(`Arrival station set to: ${stationList[0][2].toUpperCase()}`).then(() => {
 					getNumberOfBuses(convo);
 				});
+			} else {
+				await convo.say("No such arival station! Please try again.");
+				getToStation(convo);
 			}
 		});
 	};
@@ -217,7 +224,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 					buttons: buttonList
 				});
 			} else if (stationList.length == 1) {
-				convo.set("departure_station", userInput);
+				convo.set("departure_station_id", stationList[0][3]);
 				convo.say(`Departure station set to: ${stationList[0][2].toUpperCase()}`).then(() => {
 					getToStation(convo);
 				});
@@ -231,6 +238,14 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 	chat.conversation(convo => {
 		getFromStation(convo);
 	});
+});
+
+bot.on("postback:ARRIVAL", (chat, payload) => {
+	console.log("arrival data received!");
+});
+
+bot.on("postback:DEPARTURE", (chat, payload) => {
+	console.log("departure data received");
 });
 
 // bot.hear("*!test!*", (payload, chat) => {
