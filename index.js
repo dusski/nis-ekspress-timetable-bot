@@ -8,8 +8,63 @@ const BootBot = require("bootbot"),
 	cheerio = require("cheerio"),
 	fs = require("fs");
 
+// TODO: Implement latinize to find similar buses from the list and then display them for the user
+// https://stackoverflow.com/questions/5440275/search-an-array-return-partial-matches
+
 const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
+
+let latinize = string => {
+	const latinizer = {
+		š: "sh",
+		đ: "dj",
+		č: "ch",
+		ć: "tj",
+		ž: "zh",
+		а: "a",
+		б: "b",
+		в: "v",
+		г: "g",
+		д: "d",
+		ђ: "dj",
+		е: "e",
+		ж: "zh",
+		з: "z",
+		и: "i",
+		ј: "j",
+		к: "k",
+		л: "l",
+		љ: "lj",
+		м: "m",
+		н: "n",
+		њ: "nj",
+		о: "o",
+		п: "p",
+		р: "r",
+		с: "s",
+		т: "t",
+		ћ: "tj",
+		у: "u",
+		ф: "f",
+		х: "h",
+		ц: "c",
+		ч: "ch",
+		џ: "dz",
+		ш: "sh"
+	};
+
+	return string
+		.toLowerCase()
+		.split("")
+		.map(letter => {
+			if (latinizer[letter]) {
+				return latinizer[letter];
+			} else {
+				return letter;
+			}
+		})
+		.join("");
+};
 
 async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 	if (!buses[fromPointName.toLowerCase()]) return "No such departure station!";
