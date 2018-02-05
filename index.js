@@ -218,7 +218,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 			// create a separate function that returns station name or an array of station names or empty array
 			if (stationList.length > 1) {
 				let buttonList = stationList.map(station => {
-					return { type: "postback", title: station[2], postback: station[2] };
+					return { type: "postback", title: station[2], postback: "DEPARTURE" };
 				});
 				convo.ask(
 					{
