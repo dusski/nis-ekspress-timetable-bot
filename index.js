@@ -217,7 +217,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 			// TODO: instead of checking busses
 			// create a separate function that returns station name or an array of station names or empty array
 			if (stationList.length > 1) {
-				let quickReplyList = stationList.filter((station, index) => {
+				let quickReplyList = stationList.slice(0, 6).map((station, index) => {
 					if (index < 6) return station[2];
 				});
 				console.log(quickReplyList);
