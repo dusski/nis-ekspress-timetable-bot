@@ -218,8 +218,13 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 			// create a separate function that returns station name or an array of station names or empty array
 			if (stationList.length > 1) {
 				let quickReplyList = stationList.map((station, index) => {
-					if (index < 8) return station[2];
+					if (index < 6) {
+						return station[2];
+					} else { 
+						break
+					}
 				});
+				cosnole.log(quickReplyList);
 				convo.ask(
 					{
 						text: "Which station did you mean?",
