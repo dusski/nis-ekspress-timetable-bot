@@ -16,19 +16,19 @@ const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
 let latinize = string => {
 	const latinizer = {
-		š: "sh",
-		đ: "dj",
-		č: "ch",
-		ć: "tj",
-		ž: "zh",
+		š: "s",
+		đ: "d",
+		č: "c",
+		ć: "t",
+		ž: "z",
 		а: "a",
 		б: "b",
 		в: "v",
 		г: "g",
 		д: "d",
-		ђ: "dj",
+		ђ: "d",
 		е: "e",
-		ж: "zh",
+		ж: "z",
 		з: "z",
 		и: "i",
 		ј: "j",
@@ -43,14 +43,14 @@ let latinize = string => {
 		р: "r",
 		с: "s",
 		т: "t",
-		ћ: "tj",
+		ћ: "t",
 		у: "u",
 		ф: "f",
 		х: "h",
 		ц: "c",
-		ч: "ch",
+		ч: "c",
 		џ: "dz",
-		ш: "sh"
+		ш: "s"
 	};
 
 	return string
@@ -65,6 +65,16 @@ let latinize = string => {
 		})
 		.join("");
 };
+
+function getStations(userInput) {
+	// working with an array of station names that have latinized form [ [ "nis", "niš", 3667 ] ]
+	const userInputStationLatinized = latinize(userInput);
+	let matches = buses.map(station => {
+		return station[0].substring(0, userInputStationLatinized.length) === userInputStationLatinized;
+	});
+
+	return matches;
+}
 
 async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 	if (!buses[fromPointName.toLowerCase()]) return "No such departure station!";
@@ -111,7 +121,6 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 			return {
 				title: bus_line,
 				subtitle: `Date: ${departure_date_time.split(" ")[0]}
-
 Departure: ${fromPointName.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
 Arival: ${arrival_time} 🚌 ${toPointName.toUpperCase()}
 
@@ -142,7 +151,7 @@ bot.hear("/help", (payload, chat) => {
 	chat.say(
 		`For getting a bus, just type in the command "!bus" and answer the questions.
 You can only type one station name at a time.
-You should also use full station names with extended Latin characters (š, ć, đ...).`
+You sould also use full station names with extended Latin characters (š, ć, đ...).`
 	);
 });
 
@@ -195,15 +204,26 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 
 	const getFromStation = convo => {
 		convo.ask("Where are you traveling from?", async (payload, convo) => {
-			const reply = payload.message.text;
-			if (!buses[reply.toLowerCase()]) {
-				await convo.say("No such departure station! Please try again.");
-				getFromStation(convo);
-			} else {
-				convo.set("departure_station", reply);
-				convo.say(`Departure station set to: ${reply}`).then(() => {
+			const userInput = payload.message.text;
+			const stationList = getStations(userInput);
+			// TODO: instead of checking busses
+			// create a separate function that returns station name or an array of station names or empty array
+			if (stationList.length > 1) {
+				let buttonList = stationList.map(station => {
+					return { type: "postback", title: station[2], postback: station[2] };
+				});
+				convo.ask({
+					text: "Which station did you mean?",
+					buttons: buttonList
+				});
+			} else if (stationList.length == 1) {
+				convo.set("departure_station", userInput);
+				convo.say(`Departure station set to: ${stationList[0][2].toUpperCase()}`).then(() => {
 					getToStation(convo);
 				});
+			} else {
+				await convo.say("No such departure station! Please try again.");
+				getFromStation(convo);
 			}
 		});
 	};
