@@ -220,7 +220,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 				let quickReplyList = stationList.filter((station, index) => {
 					if (index < 6) return station[2];
 				});
-				cosnole.log(quickReplyList);
+				console.log(quickReplyList);
 				convo.ask(
 					{
 						text: "Which station did you mean?",
