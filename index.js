@@ -227,7 +227,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 						quickReplies: quickReplyList
 					},
 					(payload, convo) => {
-						getFromStation(convo);
+						getToStation(convo);
 					}
 				);
 			} else if (stationList.length == 1) {
