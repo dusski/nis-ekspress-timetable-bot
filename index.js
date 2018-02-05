@@ -218,7 +218,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 			// create a separate function that returns station name or an array of station names or empty array
 			if (stationList.length > 1) {
 				let quickReplyList = stationList.map((station, index) => {
-					if (index < 10) return station[2];
+					if (index < 9) return station[2];
 				});
 				convo.ask(
 					{
