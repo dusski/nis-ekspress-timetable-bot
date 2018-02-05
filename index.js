@@ -217,16 +217,16 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 			// TODO: instead of checking busses
 			// create a separate function that returns station name or an array of station names or empty array
 			if (stationList.length > 1) {
-				let buttonList = stationList.map(station => {
-					return { type: "postback", title: station[2], postback: "DEPARTURE" };
+				let quickReplyList = stationList.map(station => {
+					return station[2];
 				});
 				convo.ask(
 					{
 						text: "Which station did you mean?",
-						buttons: buttonList
+						quickReplies: quickReplyList
 					},
 					(payload, convo) => {
-						convo.say("wait...");
+						getFromStation(convo);
 					}
 				);
 			} else if (stationList.length == 1) {
@@ -253,9 +253,3 @@ bot.on("postback:ARRIVAL", (chat, payload) => {
 bot.on("postback:DEPARTURE", (chat, payload) => {
 	console.log("departure data received");
 });
-
-// bot.hear("*!test!*", (payload, chat) => {
-// 	chat.sendTemplate({
-
-// 	}, );
-// })
