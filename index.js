@@ -66,15 +66,30 @@ let latinize = string => {
 		.join("");
 };
 
-async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
-	if (!buses[fromPointName.toLowerCase()]) return "No such departure station!";
-	if (!buses[toPointName.toLowerCase()]) return "No such arival station!";
+function getStations(string) {
+	// working with an array of station names that have latinized form [ [ "nis", "niš", 3667 ] ]
+	const string_latinized = latinize(string.toLowerCase());
+	let matches = buses.filter(station => {
+		return station[0].substring(0, string_latinized.length) === string_latinized;
+	});
 
+	return matches;
+}
+
+async function getBuses(
+	url,
+	departure_station_name,
+	departure_station_id,
+	arrival_station_name,
+	arrival_station_id,
+	numberOfBuses
+) {
 	const busNumber = numberOfBuses ? (numberOfBuses > 9 ? 10 : numberOfBuses) : 3;
 
-	console.log(
-		`New request: ${fromPointName} => ${toPointName} - ${numberOfBuses} (time: ${moment().format("HH:mm")})`
-	);
+	// console.log(
+	// `New request: ${fromPointName} => ${toPointName} - ${numberOfBuses} (time: ${moment().format("HH:mm")})`
+	// );
+
 	let response = await axios.get(url, {
 		params: {
 			inNext: 1,
@@ -83,8 +98,8 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 			// tb_FromTime: moment().format("HH:mm"),
 			// FromPointName: fromPointName.toUpperCase(),
 			// ToPointName: toPointName.toUpperCase(),
-			FromPointNameId: buses[fromPointName.toLowerCase()],
-			ToPointNameId: buses[toPointName.toLowerCase()],
+			FromPointNameId: departure_station_id,
+			ToPointNameId: arrival_station_id,
 			// filterPassengerId: 1,
 			// RoundtripProcessing: false,
 			// ValidityUnlimited: true,
@@ -111,9 +126,8 @@ async function getBuses(url, fromPointName, toPointName, numberOfBuses) {
 			return {
 				title: bus_line,
 				subtitle: `Date: ${departure_date_time.split(" ")[0]}
-
-Departure: ${fromPointName.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
-Arival: ${arrival_time} 🚌 ${toPointName.toUpperCase()}
+Departure: ${departure_station_name.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
+Arival: ${arrival_time} 🚌 ${arrival_station_name.toUpperCase()}
 
 `
 			};
@@ -153,8 +167,10 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 		convo.say(
 			await getBuses(
 				base_url,
-				convo.get("departure_station"),
-				convo.get("arrival_station"),
+				convo.get("departure_station_name"),
+				convo.get("departure_station_id"),
+				convo.get("arrival_station_name"),
+				convo.get("arrival_station_id"),
 				convo.get("number_of_buses")
 			)
 		);
@@ -180,13 +196,17 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 
 	const getToStation = convo => {
 		convo.ask("And where are you traveling to?", async (payload, convo) => {
-			const reply = payload.message.text;
-			if (!buses[reply.toLowerCase()]) {
+			const userInput = payload.message.text;
+
+			let stationList = getStations(userInput);
+
+			if (!stationList[0]) {
 				await convo.say("No such arival station! Please try again.");
 				getToStation(convo);
 			} else {
-				convo.set("arrival_station", reply);
-				convo.say(`Arrival station set to: ${reply}`).then(() => {
+				convo.set("arrival_station_name", stationList[0][1]);
+				convo.set("arrival_station_id", stationList[0][2]);
+				convo.say(`Arrival station set to: ${stationList[0][1].toUpperCase()}`).then(() => {
 					getNumberOfBuses(convo);
 				});
 			}
@@ -195,13 +215,17 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 
 	const getFromStation = convo => {
 		convo.ask("Where are you traveling from?", async (payload, convo) => {
-			const reply = payload.message.text;
-			if (!buses[reply.toLowerCase()]) {
+			const userInput = payload.message.text;
+
+			let stationList = getStations(userInput);
+
+			if (!stationList[0]) {
 				await convo.say("No such departure station! Please try again.");
 				getFromStation(convo);
 			} else {
-				convo.set("departure_station", reply);
-				convo.say(`Departure station set to: ${reply}`).then(() => {
+				convo.set("departure_station_name", stationList[0][1]);
+				convo.set("departure_station_id", stationList[0][2]);
+				convo.say(`Departure station set to: ${stationList[0][1].toUpperCase()}`).then(() => {
 					getToStation(convo);
 				});
 			}
