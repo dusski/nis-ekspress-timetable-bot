@@ -68,21 +68,17 @@ let latinize = string => {
 
 function getStations(string) {
 	// working with an array of station names that have latinized form [ [ "nis", "niš", 3667 ] ]
-string = string.toLowerCase();
+	string = string.toLowerCase();
 	const string_latinized = latinize(string.toLowerCase());
 	let matches = buses.filter(station => {
 		return station[0].substring(0, string_latinized.length) === string_latinized;
 	});
-
-console.log(matches);
 
 	if (!matches[0]) {
 		matches = buses.filter(station => {
 			return station[1].substring(0, string.length) === string;
 		});
 	}
-
-console.log(matches)
 
 	return matches;
 }
