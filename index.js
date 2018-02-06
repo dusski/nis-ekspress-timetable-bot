@@ -68,7 +68,7 @@ let latinize = string => {
 
 function getStations(userInput) {
 	// working with an array of station names that have latinized form [ [ "nis", "niš", 3667 ] ]
-	const userInputStationLatinized = latinize(userInput);
+	const userInputStationLatinized = latinize(userInput.toLowerCase());
 	let matches = buses.filter(station => {
 		return station[0].substring(0, userInputStationLatinized.length) === userInputStationLatinized;
 	});
@@ -209,22 +209,36 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 		});
 	};
 
+	function quickReplyList() {}
+
 	const getFromStation = convo => {
 		convo.ask("Where are you traveling from?", async (payload, convo) => {
 			const userInput = payload.message.text;
-			const stationList = getStations(userInput);
-			console.log(stationList);
+			if (userInput == "next") {
+				page_number = page_number >= number_of_pages ? page_number : page_number + 1;
+			} else if (userInput == "previous") {
+				page_number = page_number > 0 ? page_number - 1 : 0;
+			} else {
+				const stationList = getStations(userInput);
+				console.log(stationList);
+				let page_size = 5;
+				let page_number = 0;
+				let number_of_pages = Math.ceil(stationList.length / page_size);
+			}
+
 			// TODO: instead of checking busses
 			// create a separate function that returns station name or an array of station names or empty array
 			if (stationList.length > 1) {
-				let quickReplyList = stationList.slice(0, 6).map((station, index) => {
-					return station[1];
-				});
+				let quickReplyList = stationList
+					.slice(page_size * page_number, page_size * page_number + page_size)
+					.map((station, index) => {
+						return station[1].toUpperCase;
+					});
 				console.log(quickReplyList);
 				convo.ask(
 					{
 						text: "Which station did you mean?",
-						quickReplies: quickReplyList
+						quickReplies: [...quickReplyList, page_number == number_of_pages ? null : "next"]
 					},
 					(payload, convo) => {
 						getToStation(convo);
@@ -245,12 +259,4 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 	chat.conversation(convo => {
 		getFromStation(convo);
 	});
-});
-
-bot.on("postback:ARRIVAL", (chat, payload) => {
-	console.log("arrival data received!");
-});
-
-bot.on("postback:DEPARTURE", (chat, payload) => {
-	console.log("departure data received");
 });
