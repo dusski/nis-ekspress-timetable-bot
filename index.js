@@ -1,4 +1,3 @@
-// @ts-check
 "use strict";
 
 require("dotenv").load();
@@ -17,19 +16,19 @@ const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
 let latinize = string => {
 	const latinizer = {
-		š: "s",
-		đ: "d",
-		č: "c",
-		ć: "t",
-		ž: "z",
+		š: "sh",
+		đ: "dj",
+		č: "ch",
+		ć: "tj",
+		ž: "zh",
 		а: "a",
 		б: "b",
 		в: "v",
 		г: "g",
 		д: "d",
-		ђ: "d",
+		ђ: "dj",
 		е: "e",
-		ж: "z",
+		ж: "zh",
 		з: "z",
 		и: "i",
 		ј: "j",
@@ -44,14 +43,14 @@ let latinize = string => {
 		р: "r",
 		с: "s",
 		т: "t",
-		ћ: "t",
+		ћ: "tj",
 		у: "u",
 		ф: "f",
 		х: "h",
 		ц: "c",
-		ч: "c",
+		ч: "ch",
 		џ: "dz",
-		ш: "s"
+		ш: "sh"
 	};
 
 	return string
@@ -67,22 +66,30 @@ let latinize = string => {
 		.join("");
 };
 
-function getStations(userInput) {
+function getStations(string) {
 	// working with an array of station names that have latinized form [ [ "nis", "niš", 3667 ] ]
-	const userInputStationLatinized = latinize(userInput.toLowerCase());
+	const string_latinized = latinize(string.toLowerCase());
 	let matches = buses.filter(station => {
-		return station[0].substring(0, userInputStationLatinized.length) === userInputStationLatinized;
+		return station[0].substring(0, string_latinized.length) === string_latinized;
 	});
 
 	return matches;
 }
 
-async function getBuses(url, fromPointNameId, toPointNameId, numberOfBuses) {
-	const number_of_buses = numberOfBuses ? (numberOfBuses > 9 ? 10 : numberOfBuses) : 3;
+async function getBuses(
+	url,
+	departure_station_name,
+	departure_station_id,
+	arrival_station_name,
+	arrival_station_id,
+	numberOfBuses
+) {
+	const busNumber = numberOfBuses ? (numberOfBuses > 9 ? 10 : numberOfBuses) : 3;
 
-	console.log(
-		`New request: ${fromPointNameId} => ${toPointNameId} - ${numberOfBuses} (time: ${moment().format("HH:mm")})`
-	);
+	// console.log(
+	// `New request: ${fromPointName} => ${toPointName} - ${numberOfBuses} (time: ${moment().format("HH:mm")})`
+	// );
+
 	let response = await axios.get(url, {
 		params: {
 			inNext: 1,
@@ -91,8 +98,8 @@ async function getBuses(url, fromPointNameId, toPointNameId, numberOfBuses) {
 			// tb_FromTime: moment().format("HH:mm"),
 			// FromPointName: fromPointName.toUpperCase(),
 			// ToPointName: toPointName.toUpperCase(),
-			FromPointNameId: fromPointNameId,
-			ToPointNameId: toPointNameId,
+			FromPointNameId: departure_station_id,
+			ToPointNameId: arrival_station_id,
 			// filterPassengerId: 1,
 			// RoundtripProcessing: false,
 			// ValidityUnlimited: true,
@@ -104,7 +111,7 @@ async function getBuses(url, fromPointNameId, toPointNameId, numberOfBuses) {
 
 	let output = $(".listing-border > tbody")
 		.children()
-		.map((i, el) => (i < numberOfBuses ? el : null))
+		.map((i, el) => (i < busNumber ? el : null))
 		.map((i, el) => {
 			let bus_line = cheerio
 				.load(el)(".columnRouteName")
@@ -119,8 +126,8 @@ async function getBuses(url, fromPointNameId, toPointNameId, numberOfBuses) {
 			return {
 				title: bus_line,
 				subtitle: `Date: ${departure_date_time.split(" ")[0]}
-Departure: ${fromPointNameId.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
-Arival: ${arrival_time} 🚌 ${toPointNameId.toUpperCase()}
+Departure: ${departure_station_name.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
+Arival: ${arrival_time} 🚌 ${arrival_station_name.toUpperCase()}
 
 `
 			};
@@ -137,10 +144,11 @@ const bot = new BootBot({
 });
 
 bot.start(process.env.PORT);
+bot.deleteGetStartedButton();
 
 bot.on("message", (payload, chat, data) => {
 	if (!data.captured) {
-		chat.say(`Echo: ${payload.message.text}`);
+		//		chat.say(`Echo: ${payload.message.text}`);
 	}
 });
 
@@ -148,7 +156,7 @@ bot.hear("/help", (payload, chat) => {
 	chat.say(
 		`For getting a bus, just type in the command "!bus" and answer the questions.
 You can only type one station name at a time.
-You sould also use full station names with extended Latin characters (š, ć, đ...).`
+You should also use full station names with extended Latin characters (š, ć, đ...).`
 	);
 });
 
@@ -159,7 +167,9 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 		convo.say(
 			await getBuses(
 				base_url,
+				convo.get("departure_station_name"),
 				convo.get("departure_station_id"),
+				convo.get("arrival_station_name"),
 				convo.get("arrival_station_id"),
 				convo.get("number_of_buses")
 			)
@@ -187,80 +197,37 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 	const getToStation = convo => {
 		convo.ask("And where are you traveling to?", async (payload, convo) => {
 			const userInput = payload.message.text;
-			const stationList = getStations(userInput);
-			// TODO: instead of checking busses
-			// create a separate function that returns station name or an array of station names or empty array
-			if (stationList.length > 1) {
-				let buttonList = stationList.map(station => {
-					return { type: "postback", title: station[2], postback: station[2] };
-				});
-				convo.ask({
-					text: "Which station did you mean?",
-					buttons: buttonList
-				});
-			} else if (stationList.length == 1) {
-				convo.set("arrival_station_id", stationList[0][3]);
-				convo.say(`Arrival station set to: ${stationList[0][2].toUpperCase()}`).then(() => {
-					getNumberOfBuses(convo);
-				});
-			} else {
+
+			let stationList = getStations(userInput);
+
+			if (!stationList[0]) {
 				await convo.say("No such arival station! Please try again.");
 				getToStation(convo);
+			} else {
+				convo.set("arrival_station_name", stationList[0][1]);
+				convo.set("arrival_station_id", stationList[0][2]);
+				convo.say(`Arrival station set to: ${stationList[0][1].toUpperCase()}`).then(() => {
+					getNumberOfBuses(convo);
+				});
 			}
 		});
 	};
-
-	function quickReplyList() {}
 
 	const getFromStation = convo => {
 		convo.ask("Where are you traveling from?", async (payload, convo) => {
 			const userInput = payload.message.text;
 
-			let stationList;
-			let page_size = 5;
-			let page_number;
-			let number_of_pages;
-			if (userInput != "next" && userInput != "previous") {
-				console.log("passing");
-				stationList = getStations(userInput);
-				number_of_pages = Math.ceil(stationList.length / page_size);
-				console.log(stationList);
-				page_number = 0;
-			} else if (userInput == "previous") {
-				page_number = page_number > 0 ? page_number - 1 : 0;
-			} else if (userInput == "next") {
-				page_number = page_number >= number_of_pages ? page_number : page_number + 1;
-			}
+			let stationList = getStations(userInput);
 
-			console.log("STATIONS NUMBER: " + stationList.length);
-			// TODO: instead of checking busses
-			// create a separate function that returns station name or an array of station names or empty array
-			if (stationList.length > 1) {
-				console.log("PAGINATION NUMBERS: " + page_size + " " + page_number);
-				let quickReplyList = stationList
-					.slice(page_size * page_number, page_size * page_number + page_size)
-					.map(station => {
-						return station[1].toUpperCase();
-					});
-				console.log("QUICK REPLIES NUMBER: " + quickReplyList);
-				convo.ask(
-					{
-						text: "Which station did you mean?",
-						quickReplies: [...quickReplyList, page_number == number_of_pages ? undefined : "next"]
-					},
-					(payload, convo) => {
-						getFromStation(convo);
-					}
-				);
-			} else if (stationList.length == 1) {
-				console.log("STATION LIST 1");
-				convo.set("departure_station_id", stationList[0][3]);
-				convo.say(`Departure station set to: ${stationList[0][2].toUpperCase()}`).then(() => {
-					getToStation(convo);
-				});
-			} else if (stationList.length < 1) {
+			if (!stationList[0]) {
 				await convo.say("No such departure station! Please try again.");
 				getFromStation(convo);
+			} else {
+				convo.set("departure_station_name", stationList[0][1]);
+				convo.set("departure_station_id", stationList[0][2]);
+				convo.say(`Departure station set to: ${stationList[0][1].toUpperCase()}`).then(() => {
+					getToStation(convo);
+				});
 			}
 		});
 	};
@@ -269,3 +236,9 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 		getFromStation(convo);
 	});
 });
+
+// bot.hear("*!test!*", (payload, chat) => {
+// 	chat.sendTemplate({
+
+// 	}, );
+// })
