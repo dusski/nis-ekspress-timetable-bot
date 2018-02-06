@@ -86,9 +86,11 @@ async function getBuses(
 ) {
 	const busNumber = numberOfBuses ? (numberOfBuses > 9 ? 10 : numberOfBuses) : 3;
 
-	// console.log(
-	// `New request: ${fromPointName} => ${toPointName} - ${numberOfBuses} (time: ${moment().format("HH:mm")})`
-	// );
+	console.log(
+		`New request: ${departure_station_name} => ${arrival_station_name} - ${numberOfBuses} (time: ${moment().format(
+			"HH:mm"
+		)})`
+	);
 
 	let response = await axios.get(url, {
 		params: {
