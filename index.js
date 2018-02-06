@@ -73,6 +73,12 @@ function getStations(string) {
 		return station[0].substring(0, string_latinized.length) === string_latinized;
 	});
 
+	if (!matches[0]) {
+		matches = buses.filter(station => {
+			return station[1].substring(0, string.length) === string;
+		});
+	}
+
 	return matches;
 }
 
