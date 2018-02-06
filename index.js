@@ -1,3 +1,4 @@
+// @ts-check
 "use strict";
 
 require("dotenv").load();
@@ -77,7 +78,7 @@ function getStations(userInput) {
 }
 
 async function getBuses(url, fromPointNameId, toPointNameId, numberOfBuses) {
-	const numberOfBuses = numberOfBuses ? (numberOfBuses > 9 ? 10 : numberOfBuses) : 3;
+	const number_of_buses = numberOfBuses ? (numberOfBuses > 9 ? 10 : numberOfBuses) : 3;
 
 	console.log(
 		`New request: ${fromPointNameId} => ${toPointNameId} - ${numberOfBuses} (time: ${moment().format("HH:mm")})`
@@ -214,42 +215,50 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 	const getFromStation = convo => {
 		convo.ask("Where are you traveling from?", async (payload, convo) => {
 			const userInput = payload.message.text;
-			if (userInput == "next") {
-				page_number = page_number >= number_of_pages ? page_number : page_number + 1;
+
+			let stationList;
+			let page_size = 5;
+			let page_number;
+			let number_of_pages;
+			if (userInput != "next" && userInput != "previous") {
+				console.log("passing");
+				stationList = getStations(userInput);
+				number_of_pages = Math.ceil(stationList.length / page_size);
+				console.log(stationList);
+				page_number = 0;
 			} else if (userInput == "previous") {
 				page_number = page_number > 0 ? page_number - 1 : 0;
-			} else {
-				const stationList = getStations(userInput);
-				console.log(stationList);
-				let page_size = 5;
-				let page_number = 0;
-				let number_of_pages = Math.ceil(stationList.length / page_size);
+			} else if (userInput == "next") {
+				page_number = page_number >= number_of_pages ? page_number : page_number + 1;
 			}
 
+			console.log("STATIONS NUMBER: " + stationList.length);
 			// TODO: instead of checking busses
 			// create a separate function that returns station name or an array of station names or empty array
 			if (stationList.length > 1) {
+				console.log("PAGINATION NUMBERS: " + page_size + " " + page_number);
 				let quickReplyList = stationList
 					.slice(page_size * page_number, page_size * page_number + page_size)
-					.map((station, index) => {
-						return station[1].toUpperCase;
+					.map(station => {
+						return station[1].toUpperCase();
 					});
-				console.log(quickReplyList);
+				console.log("QUICK REPLIES NUMBER: " + quickReplyList);
 				convo.ask(
 					{
 						text: "Which station did you mean?",
-						quickReplies: [...quickReplyList, page_number == number_of_pages ? null : "next"]
+						quickReplies: [...quickReplyList, page_number == number_of_pages ? undefined : "next"]
 					},
 					(payload, convo) => {
-						getToStation(convo);
+						getFromStation(convo);
 					}
 				);
 			} else if (stationList.length == 1) {
+				console.log("STATION LIST 1");
 				convo.set("departure_station_id", stationList[0][3]);
 				convo.say(`Departure station set to: ${stationList[0][2].toUpperCase()}`).then(() => {
 					getToStation(convo);
 				});
-			} else {
+			} else if (stationList.length < 1) {
 				await convo.say("No such departure station! Please try again.");
 				getFromStation(convo);
 			}
