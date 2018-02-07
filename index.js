@@ -241,9 +241,3 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 		inputFromStation(convo);
 	});
 });
-
-// bot.hear("*!test!*", (payload, chat) => {
-// 	chat.sendTemplate({
-
-// 	}, );
-// })
