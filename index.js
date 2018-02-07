@@ -14,13 +14,8 @@ const BootBot = require("bootbot"),
 const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
-<<<<<<< HEAD
 const latinize = string => {
 	const dictionary = {
-=======
-let latinize = string => {
-	const latinizer = {
->>>>>>> master
 		š: "s",
 		đ: "d",
 		č: "c",
@@ -41,7 +36,6 @@ let latinize = string => {
 		.join("");
 };
 
-<<<<<<< HEAD
 const getStations = string => {
 	// working with an array of station names that have latinized form [ [ "nis", "niš", 3667 ] ]
 	const input = string.toLowerCase();
@@ -60,48 +54,20 @@ const getStations = string => {
 };
 
 const getBuses = async (
-=======
-function getStations(string) {
-	// working with an array of station names that have latinized form [ [ "nis", "niš", 3667 ] ]
-	string = string.toLowerCase();
-	const string_latinized = latinize(string.toLowerCase());
-	let matches = buses.filter(station => {
-		return station[0].substring(0, string_latinized.length) === string_latinized;
-	});
-
-	if (!matches[0]) {
-		matches = buses.filter(station => {
-			return station[1].substring(0, string.length) === string;
-		});
-	}
-
-	return matches;
-}
-
-async function getBuses(
->>>>>>> master
 	url,
 	departure_station_name,
 	departure_station_id,
 	arrival_station_name,
 	arrival_station_id,
 	numberOfBuses
-<<<<<<< HEAD
 ) => {
-=======
-) {
->>>>>>> master
 	console.log(
 		`New request: ${departure_station_name} => ${arrival_station_name} - ${numberOfBuses} (time: ${moment().format(
 			"HH:mm"
 		)})`
 	);
 
-<<<<<<< HEAD
 	const response = await axios.get(url, {
-=======
-	let response = await axios.get(url, {
->>>>>>> master
 		params: {
 			inNext: 1,
 			timeFlagNow: true,
@@ -165,11 +131,7 @@ bot.start(process.env.PORT);
 bot.hear("/help", (payload, chat) => {
 	chat.say(
 		`For getting a bus, just type in the command "!bus" and answer the questions.
-<<<<<<< HEAD
 You can only type one station name at a time.	`
-=======
-You can only type one station name at a time.`
->>>>>>> master
 	);
 });
 
@@ -209,7 +171,6 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 		);
 	};
 
-<<<<<<< HEAD
 	const inputToStation = convo => {
 		convo.ask(
 			"Where are you traveling to?",
@@ -237,32 +198,12 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 				} else {
 					convo.say("Something went wrong. Please try again.");
 					inputToStation(convo);
-=======
-	const getToStation = convo => {
-		convo.ask(
-			"And where are you traveling to?",
-			async (payload, convo) => {
-				const userInput = payload.message.text;
-
-				let stationList = getStations(userInput);
-
-				if (!stationList[0]) {
-					await convo.say("No such arival station! Please try again.");
-					getToStation(convo);
-				} else {
-					convo.set("arrival_station_name", stationList[0][1]);
-					convo.set("arrival_station_id", stationList[0][2]);
-					convo.say(`Arrival station set to: ${stationList[0][1].toUpperCase()}`).then(() => {
-						getNumberOfBuses(convo);
-					});
->>>>>>> master
 				}
 			},
 			{ typing: true }
 		);
 	};
 
-<<<<<<< HEAD
 	const inputFromStation = convo => {
 		convo.ask(
 			"Where are you traveling from?",
@@ -290,25 +231,6 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 				} else {
 					convo.say("Something went wrong. Please try again.");
 					inputFromStation(convo);
-=======
-	const getFromStation = convo => {
-		convo.ask(
-			"Where are you traveling from?",
-			async (payload, convo) => {
-				const userInput = payload.message.text;
-
-				let stationList = getStations(userInput);
-
-				if (!stationList[0]) {
-					await convo.say("No such departure station! Please try again.");
-					getFromStation(convo);
-				} else {
-					convo.set("departure_station_name", stationList[0][1]);
-					convo.set("departure_station_id", stationList[0][2]);
-					convo.say(`Departure station set to: ${stationList[0][1].toUpperCase()}`).then(() => {
-						getToStation(convo);
-					});
->>>>>>> master
 				}
 			},
 			{ typing: true }
