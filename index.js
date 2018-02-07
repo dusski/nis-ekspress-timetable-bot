@@ -8,9 +8,6 @@ const BootBot = require("bootbot"),
 	cheerio = require("cheerio"),
 	fs = require("fs");
 
-// TODO: Implement latinize to find similar buses from the list and then display them for the user
-// https://stackoverflow.com/questions/5440275/search-an-array-return-partial-matches
-
 const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
@@ -37,7 +34,6 @@ const latinize = string => {
 };
 
 const getStations = string => {
-	// working with an array of station names that have latinized form [ [ "nis", "niš", 3667 ] ]
 	const input = string.toLowerCase();
 	const input_latinized = latinize(input);
 	let matches = buses.filter(station => {
@@ -134,8 +130,6 @@ bot.hear("/help", (payload, chat) => {
 You can only type one station name at a time.	`
 	);
 });
-
-// TODO: Implement error handling
 
 bot.hear(/\!bus/gi, (payload, chat) => {
 	const sendBusList = async convo => {
