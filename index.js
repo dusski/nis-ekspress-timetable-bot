@@ -206,7 +206,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 				if (!stationList[0]) {
 					await convo.say("No such departure station! Please try again.");
 					getFromStation(convo);
-				} else if (stationList > 1) {
+				} else if (stationList.length > 1) {
 					convo.say({
 						text: `Which station did you mean?
 Available stations:
