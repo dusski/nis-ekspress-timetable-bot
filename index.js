@@ -125,7 +125,7 @@ bot.deleteGetStartedButton();
 
 bot.on("message", (payload, chat, data) => {
 	if (!data.captured) {
-		//		chat.say(`Echo: ${payload.message.text}`);
+		chat.say(`Echo: ${payload.message.text}`);
 	}
 });
 
