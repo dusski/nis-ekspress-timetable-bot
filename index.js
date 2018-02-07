@@ -96,14 +96,11 @@ const getDepartures = async (
 				.load(el)(".columnPassengerArrivalTime")
 				.text();
 
-			return {
-				line: bus_line,
-				date: departure_date_time.split(" ")[0],
-				departure_station: departure_station_name.toUpperCase(),
-				departure_time: departure_date_time.split(" ")[1],
-				arrival_station: arrival_station_name.toUpperCase(),
-				arrival_time: arrival_time
-			};
+			return `${bus_line}\nDate: ${
+				departure_date_time.split(" ")[0]
+			}\nDeparture: ${departure_station_name.toUpperCase()} 🚌 ${
+				departure_date_time.split(" ")[1]
+			}\nArrival: ${arrival_station_name.toUpperCase()} 🚌 ${arrival_time}\n\n`;
 		})
 		.get();
 
@@ -132,22 +129,18 @@ bot.hear("/help", (payload, chat) => {
 
 bot.hear(/\!bus/gi, (payload, chat) => {
 	const sendBusList = async convo => {
-		const departureList = await getDepartures(
-			base_url,
-			convo.get("departure_station_name"),
-			convo.get("departure_station_id"),
-			convo.get("arrival_station_name"),
-			convo.get("arrival_station_id"),
-			convo.get("number_of_buses")
+		convo.say(
+			await getBuses(
+				base_url,
+				convo.get("departure_station_name"),
+				convo.get("departure_station_id"),
+				convo.get("arrival_station_name"),
+				convo.get("arrival_station_id"),
+				convo.get("number_of_buses")
+			),
+			{ typing: true }
 		);
-
-		for (let departure of departureList) {
-			convo.say(
-				`${departure.line}\nDate: ${departure.date}\nDeparture: ${departure.departure_station} 🚌 ${
-					departure.departure_time
-				}\nArrival: ${departure.arrival_station} 🚌 ${departure.arrival_time}`
-			);
-		}
+		convo.end();
 	};
 
 	const inputNumberOfBuses = convo => {
