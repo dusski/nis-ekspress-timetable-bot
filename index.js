@@ -194,10 +194,10 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 Available stations:
 ${stationList.map(station => "- " + station[1].toUpperCase() + "\n").join("")}
 Please try again.`);
-					getFromStation(convo);
+					getToStation(convo);
 				} else {
 					convo.say("Something went wrong. Please try again.");
-					getFromStation(convo);
+					getToStation(convo);
 				}
 			},
 			{ typing: true }
