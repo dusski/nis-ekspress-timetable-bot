@@ -130,7 +130,7 @@ bot.hear("/help", (payload, chat) => {
 bot.hear(/\!bus/gi, (payload, chat) => {
 	const sendBusList = async convo => {
 		convo.say(
-			await getBuses(
+			await getDepartures(
 				base_url,
 				convo.get("departure_station_name"),
 				convo.get("departure_station_id"),
