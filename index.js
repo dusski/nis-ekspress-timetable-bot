@@ -207,12 +207,11 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 					await convo.say("No such departure station! Please try again.");
 					getFromStation(convo);
 				} else if (stationList.length > 1) {
-					convo.say({
-						text: `Which station did you mean?
+					const stations = stationList.map(station => "-" + station[1] + "\n").join("");
+					convo.say(`Which station did you mean?
 Available stations:
-${stationList.map(station => "-" + station[1] + "\n")}
-Please try again.`
-					});
+${stations}
+Please try again.`);
 					getFromStation(convo);
 				} else {
 					convo.set("departure_station_name", stationList[0][1]);
