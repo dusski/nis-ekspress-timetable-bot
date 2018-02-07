@@ -14,7 +14,7 @@ const BootBot = require("bootbot"),
 const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
-let latinize = string => {
+const latinize = string => {
 	const latinizer = {
 		š: "s",
 		đ: "d",
@@ -36,7 +36,7 @@ let latinize = string => {
 		.join("");
 };
 
-function getStations(string) {
+const getStations = string => {
 	// working with an array of station names that have latinized form [ [ "nis", "niš", 3667 ] ]
 	string = string.toLowerCase();
 	const string_latinized = latinize(string.toLowerCase());
@@ -51,16 +51,16 @@ function getStations(string) {
 	}
 
 	return matches;
-}
+};
 
-async function getBuses(
+const getBuses = async (
 	url,
 	departure_station_name,
 	departure_station_id,
 	arrival_station_name,
 	arrival_station_id,
 	numberOfBuses
-) {
+) => {
 	console.log(
 		`New request: ${departure_station_name} => ${arrival_station_name} - ${numberOfBuses} (time: ${moment().format(
 			"HH:mm"
@@ -112,7 +112,7 @@ Arival: ${arrival_time} 🚌 ${arrival_station_name.toUpperCase()}
 		.get();
 
 	return { cards: output };
-}
+};
 
 const bot = new BootBot({
 	accessToken: process.env.FB_ACCESS_TOKEN,
@@ -183,12 +183,21 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 				if (!stationList[0]) {
 					await convo.say("No such arival station! Please try again.");
 					getToStation(convo);
-				} else {
+				} else if (stationList[0][1] === userInput || stationList[0][0] === userInput) {
 					convo.set("arrival_station_name", stationList[0][1]);
 					convo.set("arrival_station_id", stationList[0][2]);
 					convo.say(`Arrival station set to: ${stationList[0][1].toUpperCase()}`).then(() => {
 						getNumberOfBuses(convo);
 					});
+				} else if (stationList.length > 1) {
+					convo.say(`Which station did you mean?
+Available stations:
+${stationList.map(station => "- " + station[1].toUpperCase() + "\n").join("")}
+Please try again.`);
+					getFromStation(convo);
+				} else {
+					convo.say("Something went wrong. Please try again.");
+					getFromStation(convo);
 				}
 			},
 			{ typing: true }
@@ -199,26 +208,28 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 		convo.ask(
 			"Where are you traveling from?",
 			async (payload, convo) => {
-				const userInput = payload.message.text;
+				const userInput = payload.message.text.toLowerCase();
 
 				let stationList = getStations(userInput);
 
 				if (!stationList[0]) {
 					await convo.say("No such departure station! Please try again.");
 					getFromStation(convo);
-				} else if (stationList.length > 1) {
-					const stations = stationList.map(station => "-" + station[1] + "\n").join("");
-					convo.say(`Which station did you mean?
-Available stations:
-${stations}
-Please try again.`);
-					getFromStation(convo);
-				} else {
+				} else if (stationList[0][1] === userInput || stationList[0][0] === userInput) {
 					convo.set("departure_station_name", stationList[0][1]);
 					convo.set("departure_station_id", stationList[0][2]);
 					convo.say(`Departure station set to: ${stationList[0][1].toUpperCase()}`).then(() => {
 						getToStation(convo);
 					});
+				} else if (stationList.length > 1) {
+					convo.say(`Which station did you mean?
+Available stations:
+${stationList.map(station => "- " + station[1].toUpperCase() + "\n").join("")}
+Please try again.`);
+					getFromStation(convo);
+				} else {
+					convo.say("Something went wrong. Please try again.");
+					getFromStation(convo);
 				}
 			},
 			{ typing: true }
