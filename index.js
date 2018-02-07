@@ -176,7 +176,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 		convo.ask(
 			"And where are you traveling to?",
 			async (payload, convo) => {
-				const userInput = payload.message.text;
+				const userInput = payload.message.text.toLowerCase();
 
 				let stationList = getStations(userInput);
 
