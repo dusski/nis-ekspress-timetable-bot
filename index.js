@@ -190,7 +190,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 						getNumberOfBuses(convo);
 					});
 				} else if (stationList.length > 1) {
-					convo.say(`Which station did you mean?
+					await convo.say(`Which station did you mean?
 Available stations:
 ${stationList.map(station => "- " + station[1].toUpperCase() + "\n").join("")}
 Please try again.`);
