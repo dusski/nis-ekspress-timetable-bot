@@ -102,7 +102,8 @@ const getDepartures = async (
 				departure_date_time.split(" ")[1]
 			}\nArrival: ${arrival_station_name.toUpperCase()} 🚌 ${arrival_time}\n\n`;
 		})
-		.get();
+		.get()
+		.join("");
 
 	return departures;
 };
