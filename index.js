@@ -49,7 +49,7 @@ const getStations = string => {
 	return matches;
 };
 
-const getBuses = async (
+const getDepartures = async (
 	url,
 	departure_station_name,
 	departure_station_id,
@@ -82,7 +82,7 @@ const getBuses = async (
 
 	const $ = cheerio.load(response.data);
 
-	const output = $(".listing-border > tbody")
+	const departures = $(".listing-border > tbody")
 		.children()
 		.map((i, el) => (i < numberOfBuses ? el : null))
 		.map((i, el) => {
@@ -97,17 +97,17 @@ const getBuses = async (
 				.text();
 
 			return {
-				title: bus_line,
-				subtitle: `Date: ${departure_date_time.split(" ")[0]}
-Departure: ${departure_station_name.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
-Arival: ${arrival_time} 🚌 ${arrival_station_name.toUpperCase()}
-
-`
+				line: bus_line,
+				date: departure_date_time.split(" ")[0],
+				departure_station: departure_station_name.toUpperCase(),
+				departure_time: departure_date_time.split(" ")[1],
+				arrival_station: arrival_station_name.toUpperCase(),
+				arrival_time: arrival_time
 			};
 		})
 		.get();
 
-	return { cards: output };
+	return departures;
 };
 
 const bot = new BootBot({
@@ -126,25 +126,28 @@ bot.start(process.env.PORT);
 
 bot.hear("/help", (payload, chat) => {
 	chat.say(
-		`For getting a bus, just type in the command "!bus" and answer the questions.
-You can only type one station name at a time.	`
+		`For getting a bus, just type in the command "!bus" and answer the questions. \nYou can only type one station name at a time.	`
 	);
 });
 
 bot.hear(/\!bus/gi, (payload, chat) => {
 	const sendBusList = async convo => {
-		convo.say(
-			await getBuses(
-				base_url,
-				convo.get("departure_station_name"),
-				convo.get("departure_station_id"),
-				convo.get("arrival_station_name"),
-				convo.get("arrival_station_id"),
-				convo.get("number_of_buses")
-			),
-			{ typing: true }
+		const departureList = await getDepartures(
+			base_url,
+			convo.get("departure_station_name"),
+			convo.get("departure_station_id"),
+			convo.get("arrival_station_name"),
+			convo.get("arrival_station_id"),
+			convo.get("number_of_buses")
 		);
-		convo.end();
+
+		for (departure of departureList) {
+			convo.say(
+				`${departure.line}\nDate: ${departure.date}\nDeparture: ${departure.departure_station} 🚌 ${
+					departure.departure_time
+				}\nArrival: ${departure.arrival_station} 🚌 ${departure.arrival_time}`
+			);
+		}
 	};
 
 	const inputNumberOfBuses = convo => {
