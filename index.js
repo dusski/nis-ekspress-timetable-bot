@@ -141,7 +141,7 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 			convo.get("number_of_buses")
 		);
 
-		for (departure of departureList) {
+		for (let departure of departureList) {
 			convo.say(
 				`${departure.line}\nDate: ${departure.date}\nDeparture: ${departure.departure_station} 🚌 ${
 					departure.departure_time
