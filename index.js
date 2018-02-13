@@ -16,7 +16,7 @@ const latinize = string => {
 		š: "s",
 		đ: "d",
 		č: "c",
-		ć: "t",
+		ć: "c",
 		ž: "z"
 	};
 
