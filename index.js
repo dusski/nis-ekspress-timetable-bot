@@ -6,7 +6,7 @@ const BootBot = require("bootbot"),
 	axios = require("axios"),
 	moment = require("moment"),
 	cheerio = require("cheerio"),
-	latinize = require('latinize'),
+	latinize = require("latinize"),
 	fs = require("fs");
 
 const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
@@ -109,17 +109,16 @@ bot.hear("/help", (payload, chat) => {
 
 bot.hear(/\!bus/gi, (payload, chat) => {
 	const sendBusList = async convo => {
-		convo.say(
-			await getDepartures(
-				base_url,
-				convo.get("departure_station_name"),
-				convo.get("departure_station_id"),
-				convo.get("arrival_station_name"),
-				convo.get("arrival_station_id"),
-				convo.get("number_of_buses")
-			),
-			{ typing: true }
+		let busList = await getDepartures(
+			base_url,
+			convo.get("departure_station_name"),
+			convo.get("departure_station_id"),
+			convo.get("arrival_station_name"),
+			convo.get("arrival_station_id"),
+			convo.get("number_of_buses")
 		);
+
+		convo.say(busList.length ? busList : "No departures for the chosen stations!", { typing: true });
 		convo.end();
 	};
 
