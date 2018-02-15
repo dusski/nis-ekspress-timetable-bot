@@ -6,32 +6,11 @@ const BootBot = require("bootbot"),
 	axios = require("axios"),
 	moment = require("moment"),
 	cheerio = require("cheerio"),
+	latinize = require('latinize'),
 	fs = require("fs");
 
 const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
-
-const latinize = string => {
-	const dictionary = {
-		š: "s",
-		đ: "d",
-		č: "c",
-		ć: "c",
-		ž: "z"
-	};
-
-	return string
-		.toLowerCase()
-		.split("")
-		.map(letter => {
-			if (dictionary[letter]) {
-				return dictionary[letter];
-			} else {
-				return letter;
-			}
-		})
-		.join("");
-};
 
 const getStations = string => {
 	const input = string.toLowerCase();
