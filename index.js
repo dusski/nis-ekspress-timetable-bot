@@ -84,8 +84,6 @@ const getDepartures = async (
 		.get()
 		.join("");
 
-	console.log(departures);
-
 	return departures;
 };
 
