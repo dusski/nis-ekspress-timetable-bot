@@ -36,7 +36,7 @@ const getDepartureData = async (
 	numberOfBuses
 ) => {
 	return await getDepartures(
-		url,
+		base_url,
 		departure_station_name,
 		departure_station_id,
 		arrival_station_name,
