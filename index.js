@@ -36,7 +36,7 @@ const getDepartureData = async (
 	numberOfBuses
 ) => {
 	return await getDepartures(
-		url,
+		base_url,
 		departure_station_name,
 		departure_station_id,
 		arrival_station_name,
@@ -90,6 +90,7 @@ const getDepartures = async (
 	);
 
 	const response = await getDepartureData(
+		base_url,
 		departure_station_name,
 		departure_station_id,
 		arrival_station_name,
@@ -97,7 +98,7 @@ const getDepartures = async (
 		numberOfBuses
 	);
 
-	const otuput = await parseResponse(response.data);
+	const output = await parseResponse(response.data);
 
 	return output;
 };
