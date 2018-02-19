@@ -9,7 +9,6 @@ const BootBot = require("bootbot"),
 	latinize = require("latinize"),
 	fs = require("fs");
 
-const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
 const getStations = string => {
@@ -28,40 +27,28 @@ const getStations = string => {
 	return matches;
 };
 
-const getDepartures = async (
-	url,
+const getDepartureData = async (
+	base_url,
 	departure_station_name,
 	departure_station_id,
 	arrival_station_name,
 	arrival_station_id,
 	numberOfBuses
 ) => {
-	console.log(
-		`New request: ${departure_station_name} => ${arrival_station_name} - ${numberOfBuses} (time: ${moment().format(
-			"HH:mm"
-		)})`
+	return await getDepartures(
+		url,
+		departure_station_name,
+		departure_station_id,
+		arrival_station_name,
+		arrival_station_id,
+		numberOfBuses
 	);
+};
 
-	const response = await axios.get(url, {
-		params: {
-			inNext: 1,
-			timeFlagNow: true,
-			// tb_calendar: moment().format("DD.MM.YYYY"),
-			// tb_FromTime: moment().format("HH:mm"),
-			// FromPointName: fromPointName.toUpperCase(),
-			// ToPointName: toPointName.toUpperCase(),
-			FromPointNameId: departure_station_id,
-			ToPointNameId: arrival_station_id,
-			// filterPassengerId: 1,
-			// RoundtripProcessing: false,
-			// ValidityUnlimited: true,
-			Timetable: true
-		}
-	});
+const parseResponse = async response => {
+	const $ = cheerio.load(response);
 
-	const $ = cheerio.load(response.data);
-
-	const departures = $(".listing-border > tbody")
+	const departures = await $(".listing-border > tbody")
 		.children()
 		.map((i, el) => (i < numberOfBuses ? el : null))
 		.map((i, el) => {
@@ -87,6 +74,34 @@ const getDepartures = async (
 	return departures;
 };
 
+const getDepartures = async (
+	departure_station_name,
+	departure_station_id,
+	arrival_station_name,
+	arrival_station_id,
+	numberOfBuses
+) => {
+	const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
+
+	console.log(
+		`New request: ${departure_station_name} => ${arrival_station_name} - ${numberOfBuses} (time: ${moment().format(
+			"HH:mm"
+		)})`
+	);
+
+	const response = await getDepartureData(
+		departure_station_name,
+		departure_station_id,
+		arrival_station_name,
+		arrival_station_id,
+		numberOfBuses
+	);
+
+	const otuput = await parseResponse(response.data);
+
+	return output;
+};
+
 const bot = new BootBot({
 	accessToken: process.env.FB_ACCESS_TOKEN,
 	verifyToken: process.env.FB_VERIFY_TOKEN,
@@ -110,7 +125,6 @@ bot.hear("/help", (payload, chat) => {
 bot.hear(/\!bus/gi, (payload, chat) => {
 	const sendBusList = async convo => {
 		let busList = await getDepartures(
-			base_url,
 			convo.get("departure_station_name"),
 			convo.get("departure_station_id"),
 			convo.get("arrival_station_name"),
