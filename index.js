@@ -1,5 +1,7 @@
 "use strict";
 
+// herkou: https://nis-ekspres-polasci.herokuapp.com/webhook
+
 require("dotenv").load();
 
 const BootBot = require("bootbot"),
@@ -27,28 +29,39 @@ const getStations = string => {
 	return matches;
 };
 
-const getDepartureData = async (
-	base_url,
+const getDepartures = async (
 	departure_station_name,
 	departure_station_id,
 	arrival_station_name,
 	arrival_station_id,
 	numberOfBuses
 ) => {
-	return await getDepartures(
-		base_url,
-		departure_station_name,
-		departure_station_id,
-		arrival_station_name,
-		arrival_station_id,
-		numberOfBuses
+	console.log(
+		`New request: ${departure_station_name} => ${arrival_station_name} - ${numberOfBuses} (time: ${moment().format(
+			"HH:mm"
+		)})`
 	);
-};
 
-const parseResponse = async response => {
-	const $ = cheerio.load(response);
+	const response = await axios.get(process.env.BASE_URL, {
+		params: {
+			inNext: 1,
+			timeFlagNow: true,
+			// tb_calendar: moment().format("DD.MM.YYYY"),
+			// tb_FromTime: moment().format("HH:mm"),
+			// FromPointName: fromPointName.toUpperCase(),
+			// ToPointName: toPointName.toUpperCase(),
+			FromPointNameId: departure_station_id,
+			ToPointNameId: arrival_station_id,
+			// filterPassengerId: 1,
+			// RoundtripProcessing: false,
+			// ValidityUnlimited: true,
+			Timetable: true
+		}
+	});
 
-	const departures = await $(".listing-border > tbody")
+	const $ = cheerio.load(response.data);
+
+	const departures = $(".listing-border > tbody")
 		.children()
 		.map((i, el) => (i < numberOfBuses ? el : null))
 		.map((i, el) => {
@@ -62,45 +75,30 @@ const parseResponse = async response => {
 				.load(el)(".columnPassengerArrivalTime")
 				.text();
 
-			return `${bus_line}\nDate: ${
-				departure_date_time.split(" ")[0]
-			}\nDeparture: ${departure_station_name.toUpperCase()} 🚌 ${
-				departure_date_time.split(" ")[1]
-			}\nArrival: ${arrival_station_name.toUpperCase()} 🚌 ${arrival_time}\n\n`;
+			return {
+				busLine: bus_line,
+				departure: {
+					stationName: departure_station_name,
+					date: departure_date_time.split(" ")[0],
+					time: departure_date_time.split(" ")[1]
+				},
+				arrival: {
+					stationName: arrival_station_name,
+					time: arrival_time
+				}
+			};
+
+			// `${bus_line}\nDate: ${
+			// 	departure_date_time.split(" ")[0]
+			// }\nDeparture: ${departure_station_name.toUpperCase()} 🚌 ${
+			// 	departure_date_time.split(" ")[1]
+			// }\nArrival: ${arrival_station_name.toUpperCase()} 🚌 ${arrival_time}\n\n`;
 		})
-		.get()
-		.join("");
+		.get();
+
+	console.log(departures);
 
 	return departures;
-};
-
-const getDepartures = async (
-	departure_station_name,
-	departure_station_id,
-	arrival_station_name,
-	arrival_station_id,
-	numberOfBuses
-) => {
-	const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
-
-	console.log(
-		`New request: ${departure_station_name} => ${arrival_station_name} - ${numberOfBuses} (time: ${moment().format(
-			"HH:mm"
-		)})`
-	);
-
-	const response = await getDepartureData(
-		base_url,
-		departure_station_name,
-		departure_station_id,
-		arrival_station_name,
-		arrival_station_id,
-		numberOfBuses
-	);
-
-	const output = await parseResponse(response.data);
-
-	return output;
 };
 
 const bot = new BootBot({
@@ -111,11 +109,12 @@ const bot = new BootBot({
 
 bot.start(process.env.PORT);
 
-// bot.on("message", (payload, chat, data) => {
-// 	if (!data.captured) {
-// 		chat.say(`Echo: ${payload.message.text}`);
-// 	}
-// });
+bot.on("message", (payload, chat, data) => {
+	if (!data.captured) {
+		console.log(payload.message.text);
+		chat.say(`Echo: ${payload.message.text}`);
+	}
+});
 
 bot.hear("/help", (payload, chat) => {
 	chat.say(
@@ -123,7 +122,7 @@ bot.hear("/help", (payload, chat) => {
 	);
 });
 
-bot.hear(/\!bus/gi, (payload, chat) => {
+bot.hear(/(^🚌{1})/g, (payload, chat) => {
 	const sendBusList = async convo => {
 		let busList = await getDepartures(
 			convo.get("departure_station_name"),
@@ -133,7 +132,35 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 			convo.get("number_of_buses")
 		);
 
-		convo.say(busList.length ? busList : "No departures for the chosen stations!", { typing: true });
+		if (busList.length == 0) convo.say("No departures for the chosen stations!");
+
+		for (let bus = 0; bus < busList.length; bus += 1) {
+			// {
+			// 	busLine: bus_line,
+			// 	departure: {
+			// 		stationName: departure_station_name,
+			// 		date: departure_date_time.split(" ")[0],
+			// 		time: departure_date_time.split(" ")[1]
+			// 	},
+			// 	arrival: {
+			// 		stationName: arrival_station_name,
+			// 		time: arrival_time
+			// 	}
+			// }
+
+			convo.say(
+				`${busList[bus].busLine}\nDate: ${busList[bus].departure.date}\nDeparture: ${busList[
+					bus
+				].departure.stationName.toUpperCase()} 🚌 ${busList[bus].departure.time}\nArrival: ${busList[
+					bus
+				].arrival.stationName.toUpperCase()} 🚌 ${busList[bus].arrival.time}\n\n`,
+				{
+					typing: true
+				}
+			);
+			setTimeout(() => {}, 100);
+		}
+
 		convo.end();
 	};
 
