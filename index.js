@@ -9,7 +9,6 @@ const BootBot = require("bootbot"),
 	latinize = require("latinize"),
 	fs = require("fs");
 
-const base_url = "http://195.178.51.120/WebReservations/Home/SearchForJourneys";
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
 const getStations = string => {
@@ -95,11 +94,11 @@ const bot = new BootBot({
 
 bot.start(process.env.PORT);
 
-// bot.on("message", (payload, chat, data) => {
-// 	if (!data.captured) {
-// 		chat.say(`Echo: ${payload.message.text}`);
-// 	}
-// });
+bot.on("message", (payload, chat, data) => {
+	if (!data.captured) {
+		chat.say(`Echo: ${payload.message.text}`);
+	}
+});
 
 bot.hear("/help", (payload, chat) => {
 	chat.say(
@@ -110,7 +109,7 @@ bot.hear("/help", (payload, chat) => {
 bot.hear(/\!bus/gi, (payload, chat) => {
 	const sendBusList = async convo => {
 		let busList = await getDepartures(
-			base_url,
+			process.env.BASE_URL,
 			convo.get("departure_station_name"),
 			convo.get("departure_station_id"),
 			convo.get("arrival_station_name"),
