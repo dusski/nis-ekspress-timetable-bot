@@ -11,32 +11,46 @@ const axios = require("axios"),
 
     const $ = cheerio.load(response.data);
 
-    const linijaKod = {}
+    const buslineCode = {}
 
     $(".row.borderispod > div").map((index, item) => {
         if (index <= 1) return "";
-        let linija = "", kod = "";
+        let busline = "", code = "";
         if ($(item).hasClass("linija-box")) {
-            linija = $(item).first().text().replace(/\t/g, "").replace(/\n/g, "");
-            kod = $(item).first().next().find("button").attr("data-target");
+            busline = $(item).first().text().replace(/\t/g, "").replace(/\n/g, "");
+            code = $(item).first().next().find("button").attr("data-target");
         }
-        if (linija && kod)
-            linijaKod[linija] = kod;
+        if (busline && code)
+            buslineCode[busline] = code;
     });
 
     let dayToday = moment().day() < 5 ? 0 : (moment().day() == 5 ? 1 : 2);
 
-    const tabela = $($(linijaKod["НИШКА БАЊА - МИНОВО НАСЕЉЕ"]).find(".nav-tabs > li")[dayToday]).find("a").attr("href");
+    const busTimetable = $($(buslineCode["НИШКА БАЊА - МИНОВО НАСЕЉЕ"]).find(".nav-tabs > li")[dayToday]).find("a").attr("href");
 
     const numberOfHoursToShow = 3;
 
-    const time = $(`${tabela} > table > tbody > tr`).map((index, item) => {
-        if (index < 5) console.log($(item).text());
-        // console.log($(item).first().text());
-        // if($(item).first().text() == 7) {
-        //     console.log($(item).text());
-        // }
-    })
+    const currentTime = moment().hours();
+    console.log("currentTime", currentTime);
 
-    // console.log(departures);
+
+    console.log("LENGTH OF TABLE: ", $(`${busTimetable} > table > tbody > tr`).length - 1);
+
+    const time = $(`${busTimetable} > table > tbody > tr`).map((index, item) => {
+        if (index < 1) return "";
+
+        let hours = $(item).find('td').first().text();
+        let line = $(item).text().replace(/\t/g, "").replace(/\n/g, "");
+
+        if (currentTime >= 22 && index >= 22) {
+            return (line.slice(0, 2) + " | " + line.slice(2, line.length));
+        } else {
+            if ((index + 3) >= currentTime && (index + 3) < (currentTime + numberOfHoursToShow)) {
+                return (line.slice(0, 2) + " | " + line.slice(2, line.length));
+            }
+        }
+        
+    }).get().join("\n");
+
+    console.log(time);
 })();
