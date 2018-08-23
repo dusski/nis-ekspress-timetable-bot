@@ -109,10 +109,10 @@ const bot = new BootBot({
 
 bot.start(process.env.PORT);
 
-bot.on("message", (payload, chat, data) => {
+bot.on("payload", (payload, chat, data) => {
 	// if (!data.captured) {
-	console.log(payload.message.text);
-	chat.say(`Echo: ${payload.message.text}`);
+	console.log(payload.postback.payload);
+	chat.say(`Echo: ${payload.postback.payload}`);
 	// }
 });
 
