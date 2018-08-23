@@ -110,10 +110,10 @@ const bot = new BootBot({
 bot.start(process.env.PORT);
 
 bot.on("message", (payload, chat, data) => {
-	if (!data.captured) {
+	// if (!data.captured) {
 		console.log(payload.message.text);
 		chat.say(`Echo: ${payload.message.text}`);
-	}
+	// }
 });
 
 bot.hear("/help", (payload, chat) => {
