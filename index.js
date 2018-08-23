@@ -341,5 +341,9 @@ bot.hear("!jgp", (payload, chat) => {
 
 	// TODO: generate templates from lineNames
 
-	chat.sendGenericTemplate(generateTemplates(), { typing: true });
+	let templates = generateTemplates();
+
+	console.log(JSON.stringify(templates));
+
+	chat.sendGenericTemplate(templates, { typing: true })
 });
