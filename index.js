@@ -122,7 +122,7 @@ bot.hear("/help", (payload, chat) => {
 	);
 });
 
-bot.hear(/(^🚌{1})/g, (payload, chat) => {
+bot.hear("!bus", (payload, chat) => {
 	const sendBusList = async convo => {
 		let busList = await getDepartures(
 			convo.get("departure_station_name"),
@@ -158,7 +158,7 @@ bot.hear(/(^🚌{1})/g, (payload, chat) => {
 					typing: true
 				}
 			);
-			setTimeout(() => {}, 100);
+			setTimeout(() => { }, 100);
 		}
 
 		convo.end();
@@ -251,4 +251,34 @@ bot.hear(/(^🚌{1})/g, (payload, chat) => {
 	chat.conversation(convo => {
 		inputFromStation(convo);
 	});
+});
+
+bot.hear("!jgp", (payload, chat) => {
+	chat.sendGenericTemplate([
+		{
+			title: "EXAMPLE TITLE",
+			buttons: [
+				{
+					type: "postback",
+					title: "RELATION",
+					payload: "BUS_RELATION"
+				},
+				{
+					type: "postback",
+					title: "RELATION",
+					payload: "BUS_RELATION"
+				},
+				{
+					type: "postback",
+					title: "RELATION",
+					payload: "BUS_RELATION"
+				},
+				{
+					type: "postback",
+					title: "RELATION",
+					payload: "BUS_RELATION"
+				}
+			]
+		}
+	], { typing: true })
 });

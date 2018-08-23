@@ -7,6 +7,9 @@ const axios = require("axios"),
     cheerio = require("cheerio");
 
 (async function () {
+
+    
+
     const response = await axios.get(process.env.BASE_CB_URL);
 
     const $ = cheerio.load(response.data);
@@ -25,10 +28,12 @@ const axios = require("axios"),
     });
 
     let dayToday = moment().day() < 5 ? 0 : (moment().day() == 5 ? 1 : 2);
+    
+    console.log("MOMENT DAY: " + moment().day() + "| DAY TODAY: " + dayToday);
 
     const busTimetable = $($(buslineCode["НИШКА БАЊА - МИНОВО НАСЕЉЕ"]).find(".nav-tabs > li")[dayToday]).find("a").attr("href");
 
-    const numberOfHoursToShow = 3;
+    const numberOfHoursToShow = 5;
 
     const currentTime = moment().hours();
     console.log("currentTime", currentTime);
@@ -36,21 +41,30 @@ const axios = require("axios"),
 
     console.log("LENGTH OF TABLE: ", $(`${busTimetable} > table > tbody > tr`).length - 1);
 
+    let result = [], counter = 0;
+
     const time = $(`${busTimetable} > table > tbody > tr`).map((index, item) => {
         if (index < 1) return "";
 
-        let hours = $(item).find('td').first().text();
         let line = $(item).text().replace(/\t/g, "").replace(/\n/g, "");
 
-        if (currentTime >= 22 && index >= 22) {
-            return (line.slice(0, 2) + " | " + line.slice(2, line.length));
+        if (currentTime > 23) {
+
+            if (index < 5) {
+                result.push((line.slice(0, 2) + " | " + line.slice(2, line.length)));
+            }
+
+            if (index > 20) {
+                result.splice(counter, 0, (line.slice(0, 2) + " | " + line.slice(2, line.length)));
+                counter++;
+            }
         } else {
             if ((index + 3) >= currentTime && (index + 3) < (currentTime + numberOfHoursToShow)) {
-                return (line.slice(0, 2) + " | " + line.slice(2, line.length));
+                result.push((line.slice(0, 2) + " | " + line.slice(2, line.length)));
             }
         }
-        
-    }).get().join("\n");
 
-    console.log(time);
+    });
+
+    console.log(result.join("\n"));
 })();
