@@ -274,6 +274,46 @@ bot.hear("!jgp", (payload, chat) => {
 					payload: "BUS_RELATION"
 				}
 			]
+		},
+		{
+			title: "EXAMPLE TITLE",
+			buttons: [
+				{
+					type: "postback",
+					title: "RELATION",
+					payload: "BUS_RELATION"
+				},
+				{
+					type: "postback",
+					title: "RELATION",
+					payload: "BUS_RELATION"
+				},
+				{
+					type: "postback",
+					title: "RELATION",
+					payload: "BUS_RELATION"
+				}
+			]
+		},
+		{
+			title: "EXAMPLE TITLE",
+			buttons: [
+				{
+					type: "postback",
+					title: "RELATION",
+					payload: "BUS_RELATION"
+				},
+				{
+					type: "postback",
+					title: "RELATION",
+					payload: "BUS_RELATION"
+				},
+				{
+					type: "postback",
+					title: "RELATION",
+					payload: "BUS_RELATION"
+				}
+			]
 		}
 	], { typing: true })
 });
