@@ -260,17 +260,17 @@ bot.hear("!jgp", (payload, chat) => {
 			buttons: [
 				{
 					type: "postback",
-					title: "RELATION",
+					title: "RELATION RELATION RELATION",
 					payload: "BUS_RELATION"
 				},
 				{
 					type: "postback",
-					title: "RELATION",
+					title: "RELATION RELATION RELATION",
 					payload: "BUS_RELATION"
 				},
 				{
 					type: "postback",
-					title: "RELATION",
+					title: "RELATION RELATION RELATION",
 					payload: "BUS_RELATION"
 				}
 			]
@@ -280,17 +280,17 @@ bot.hear("!jgp", (payload, chat) => {
 			buttons: [
 				{
 					type: "postback",
-					title: "RELATION",
+					title: "RELATION RELATION RELATION",
 					payload: "BUS_RELATION"
 				},
 				{
 					type: "postback",
-					title: "RELATION",
+					title: "RELATION RELATION RELATION",
 					payload: "BUS_RELATION"
 				},
 				{
 					type: "postback",
-					title: "RELATION",
+					title: "RELATION RELATION RELATION",
 					payload: "BUS_RELATION"
 				}
 			]
@@ -300,17 +300,17 @@ bot.hear("!jgp", (payload, chat) => {
 			buttons: [
 				{
 					type: "postback",
-					title: "RELATION",
+					title: "RELATION RELATION RELATION",
 					payload: "BUS_RELATION"
 				},
 				{
 					type: "postback",
-					title: "RELATION",
+					title: "RELATION RELATION RELATION",
 					payload: "BUS_RELATION"
 				},
 				{
 					type: "postback",
-					title: "RELATION",
+					title: "RELATION RELATION RELATION",
 					payload: "BUS_RELATION"
 				}
 			]
