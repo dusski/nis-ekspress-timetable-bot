@@ -272,11 +272,6 @@ bot.hear("!jgp", (payload, chat) => {
 					type: "postback",
 					title: "RELATION",
 					payload: "BUS_RELATION"
-				},
-				{
-					type: "postback",
-					title: "RELATION",
-					payload: "BUS_RELATION"
 				}
 			]
 		}
