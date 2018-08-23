@@ -253,101 +253,93 @@ bot.hear("!bus", (payload, chat) => {
 	});
 });
 
-let lineNames = {
-	"ЛИНИЈА 1": "НИШКА БАЊА - МИНОВО НАСЕЉЕ",
-	"ЛИНИЈА 1 (p)": "МИНОВО НАСЕЉЕ - НИШКА БАЊА",
-	"ЛИНИЈА 2": "БУБАЊ - ДОЊА ВРЕЖИНА",
-	"ЛИНИЈА 2 (p)": "ДОЊА ВРЕЖИНА - БУБАЊ",
-	"ЛИНИЈА 3": "БРЗИ БРОД - НАС. Р. ЈОВИЋ",
-	"ЛИНИЈА 3 (p)": "НАС. Р. ЈОВИЋ - БРЗИ БРОД",
-	"ЛИНИЈА 4": "ЧАЛИЈЕ - БУБАЊ",
-	"ЛИНИЈА 4 (p)": "БУБАЊ - ЧАЛИЈЕ",
-	"ЛИНИЈА 5": "ЖЕЛ. СТАНИЦА - СОМБОРСКА",
-	"ЛИНИЈА 5 (p)": "СОМБОРСКА - ЖЕЛ. СТАНИЦА",
-	"ЛИНИЈА 6": "ЖЕЛ. СТАНИЦА - ДУВАНИШТЕ – СКОПСКА",
-	"ЛИНИЈА 6 (p)": "ДУВАНИШТЕ – СКОПСКА - ЖЕЛ. СТАНИЦА",
-	"ЛИНИЈА 7": "САРАЈЕВСКА - КАЛАЧ Б.",
-	"ЛИНИЈА 7 (p)": "КАЛАЧ Б. - САРАЈЕВСКА",
-	"ЛИНИЈА 8": "ГАБ. РЕКА (ПАСИ ПОЉАНА) - Н.ГРОБЉЕ",
-	"ЛИНИЈА 8 (p)": "Н.ГРОБЉЕ - ГАБ. РЕКА (ПАСИ ПОЉАНА)",
-	"ЛИНИЈА 9": "МОКРАЊЧЕВА - Б. БЈЕГОВИЋ",
-	"ЛИНИЈА 9 (p)": "Б. БЈЕГОВИЋ - МОКРАЊЧЕВА",
-	"ЛИНИЈА 10": "НАСЕЉЕ „9. мај“ - ЋЕЛЕ КУЛА",
-	"ЛИНИЈА 10 (p)": "ЋЕЛЕ КУЛА - НАСЕЉЕ „9. мај“",
-	"ЛИНИЈА 12": "ДОЊИ КОМРЕН - ЊЕГОШЕВА",
-	"ЛИНИЈА 12 (p)": "ЊЕГОШЕВА - ДОЊИ КОМРЕН",
-	"ЛИНИЈА 13": "ТРГ К. АЛЕКСАНДРА - БУЛ. НЕМАЊИЋА – ДЕЛИЈСКИ ВИС",
-	"ЛИНИЈА 13 (p)": "ДЕЛИЈСКИ ВИС - БУЛ. НЕМАЊИЋА – ТРГ К. АЛЕКСАНДРА",
-	"ЛИНИЈА 34 (КРУЖНА)": "AЕРОДРОМ - А. СТАНИЦА – Ж.СТАНИЦА – AЕРОДРОМ",
-	"ЛИНИЈА 34 (p) (КРУЖНА)": "AЕРОДРОМ - Ж. СТАНИЦА – А.СТАНИЦА – AЕРОДРОМ",
-	"ЛИНИЈА 36": "ТРГ К. АЛЕКСАНДРА - МРАМОР",
-	"ЛИНИЈА 36 (p)": "МРАМОР - ТРГ К. АЛЕКСАНДРА"
-};
+let generateTemplates = () => {
+
+	let templates = [];
+  
+	const lineNames = {
+	  "ЛИНИЈА 1": "НИШКА БАЊА - МИНОВО НАСЕЉЕ",
+	  "ЛИНИЈА 1 (p)": "МИНОВО НАСЕЉЕ - НИШКА БАЊА",
+	  "ЛИНИЈА 2": "БУБАЊ - ДОЊА ВРЕЖИНА",
+	  "ЛИНИЈА 2 (p)": "ДОЊА ВРЕЖИНА - БУБАЊ",
+	  "ЛИНИЈА 3": "БРЗИ БРОД - НАС. Р. ЈОВИЋ",
+	  "ЛИНИЈА 3 (p)": "НАС. Р. ЈОВИЋ - БРЗИ БРОД",
+	  "ЛИНИЈА 4": "ЧАЛИЈЕ - БУБАЊ",
+	  "ЛИНИЈА 4 (p)": "БУБАЊ - ЧАЛИЈЕ",
+	  "ЛИНИЈА 5": "ЖЕЛ. СТАНИЦА - СОМБОРСКА",
+	  "ЛИНИЈА 5 (p)": "СОМБОРСКА - ЖЕЛ. СТАНИЦА",
+	  "ЛИНИЈА 6": "ЖЕЛ. СТАНИЦА - ДУВАНИШТЕ – СКОПСКА",
+	  "ЛИНИЈА 6 (p)": "ДУВАНИШТЕ – СКОПСКА - ЖЕЛ. СТАНИЦА",
+	  "ЛИНИЈА 7": "САРАЈЕВСКА - КАЛАЧ Б.",
+	  "ЛИНИЈА 7 (p)": "КАЛАЧ Б. - САРАЈЕВСКА",
+	  "ЛИНИЈА 8": "ГАБ. РЕКА (ПАСИ ПОЉАНА) - Н.ГРОБЉЕ",
+	  "ЛИНИЈА 8 (p)": "Н.ГРОБЉЕ - ГАБ. РЕКА (ПАСИ ПОЉАНА)",
+	  "ЛИНИЈА 9": "МОКРАЊЧЕВА - Б. БЈЕГОВИЋ",
+	  "ЛИНИЈА 9 (p)": "Б. БЈЕГОВИЋ - МОКРАЊЧЕВА",
+	  "ЛИНИЈА 10": "НАСЕЉЕ „9. мај“ - ЋЕЛЕ КУЛА",
+	  "ЛИНИЈА 10 (p)": "ЋЕЛЕ КУЛА - НАСЕЉЕ „9. мај“",
+	  "ЛИНИЈА 12": "ДОЊИ КОМРЕН - ЊЕГОШЕВА",
+	  "ЛИНИЈА 12 (p)": "ЊЕГОШЕВА - ДОЊИ КОМРЕН",
+	  "ЛИНИЈА 13": "ТРГ К. АЛЕКСАНДРА - БУЛ. НЕМАЊИЋА – ДЕЛИЈСКИ ВИС",
+	  "ЛИНИЈА 13 (p)": "ДЕЛИЈСКИ ВИС - БУЛ. НЕМАЊИЋА – ТРГ К. АЛЕКСАНДРА",
+	  "ЛИНИЈА 34 (КРУЖНА)": "AЕРОДРОМ - А. СТАНИЦА – Ж.СТАНИЦА – AЕРОДРОМ",
+	  "ЛИНИЈА 34 (p) (КРУЖНА)": "AЕРОДРОМ - Ж. СТАНИЦА – А.СТАНИЦА – AЕРОДРОМ",
+	  "ЛИНИЈА 36": "ТРГ К. АЛЕКСАНДРА - МРАМОР",
+	  "ЛИНИЈА 36 (p)": "МРАМОР - ТРГ К. АЛЕКСАНДРА"
+	};
+  
+	let lineNamesArray = Object.keys(lineNames);
+  
+	for (let index = 0; index < lineNamesArray.length + 1; index += 3) {
+	  let line = lineNamesArray[index];
+  
+	  let template = {
+		title: "Linije",
+		buttons: []
+	  };
+  
+	  let buttonOne, buttonTwo, buttonThree;
+  
+	  if (lineNamesArray[index] && lineNames[lineNamesArray[index]]) {
+		buttonOne = {
+		  type: "postback",
+		  title: lineNamesArray[index],
+		  payload: lineNames[lineNamesArray[index]]
+		};
+  
+		template.buttons.push(buttonOne);
+	  }
+  
+	  if (lineNamesArray[index + 1] && lineNames[lineNamesArray[index + 1]]) {
+		buttonTwo = {
+		  type: "postback",
+		  title: lineNamesArray[index + 1],
+		  payload: lineNames[lineNamesArray[index + 1]]
+		};
+  
+		template.buttons.push(buttonTwo);
+	  }
+  
+	  if (lineNamesArray[index + 2] && lineNames[lineNamesArray[index + 2]]) {
+		buttonThree = {
+		  type: "postback",
+		  title: lineNamesArray[index + 2],
+		  payload: lineNames[lineNamesArray[index + 2]]
+		};
+  
+		template.buttons.push(buttonThree);
+	  }
+  
+	  templates.push(template);
+	}
+  
+	return templates;
+  
+  }
 
 bot.hear("!jgp", (payload, chat) => {
 
 	// TODO: generate templates from lineNames
 
-	chat.sendGenericTemplate([
-		{
-			title: "EXAMPLE TITLE",
-			buttons: [
-				{
-					type: "postback",
-					title: "RELATION \n RELATION \n RELATION",
-					payload: "BUS_RELATION"
-				},
-				{
-					type: "postback",
-					title: "RELATION \n RELATION \n RELATION",
-					payload: "BUS_RELATION"
-				},
-				{
-					type: "postback",
-					title: "RELATION \n RELATION \n RELATION",
-					payload: "BUS_RELATION"
-				}
-			]
-		},
-		{
-			title: "EXAMPLE TITLE",
-			buttons: [
-				{
-					type: "postback",
-					title: "RELATION \n RELATION \n RELATION",
-					payload: "BUS_RELATION"
-				},
-				{
-					type: "postback",
-					title: "RELATION \n RELATION \n RELATION",
-					payload: "BUS_RELATION"
-				},
-				{
-					type: "postback",
-					title: "RELATION \n RELATION \n RELATION",
-					payload: "BUS_RELATION"
-				}
-			]
-		},
-		{
-			title: "EXAMPLE TITLE",
-			buttons: [
-				{
-					type: "postback",
-					title: "RELATION \n RELATION \n RELATION",
-					payload: "BUS_RELATION"
-				},
-				{
-					type: "postback",
-					title: "RELATION \n RELATION \n RELATION",
-					payload: "BUS_RELATION"
-				},
-				{
-					type: "postback",
-					title: "RELATION \n RELATION \n RELATION",
-					payload: "BUS_RELATION"
-				}
-			]
-		}
-	], { typing: true })
+	chat.sendGenericTemplate(generateTemplates(), { typing: true });
 });
