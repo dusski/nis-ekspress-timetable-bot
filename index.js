@@ -273,7 +273,7 @@ const jgp = async (userInput) => {
 
 	let response = await axios.get(process.env.BASE_CB_URL);
 
-	console.log("RESPONSE", response.slice(0, 500));
+	console.log("RESPONSE", response);
 
 	let $ = cheerio.load(response);
 
