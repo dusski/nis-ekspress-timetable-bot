@@ -369,16 +369,13 @@ bot.hear("!jgp", (payload, chat) => {
 
 	let templates = generateTemplates();
 
-	let sendDepartures = (message) => {
-		console.log("MESSAGE: ", message);
-	}
-
-	chat.conversation(convo => {
-		convo.sendGenericTemplate(templates, { typing: true }).then((payload, convo) => {
-			chat.say("PAYLOAD: \n" + JSON.stringify(payload));
-			sendDepartures(payload.message.text)
-		});
-	})
+	chat.sendGenericTemplate(templates, { typing: true });
 
 	// chat.sendGenericTemplate(templates, { typing: true });
+});
+
+bot.on('postback', (payload, chat) => {
+	const messagePostback = payload.postback.payload;
+
+	chat.say("POSTBACK: " + messagePostback);
 });
