@@ -274,6 +274,7 @@ const jgp = async (userInput) => {
 	let $ = cheerio.load(await axios.get(process.env.BASE_CB_URL));
 
 	$(".row.borderispod > div").map((index, item) => {
+		console.log("FROM BUSLINE CODE");
 		if (index <= 1) return "";
 		let busline = "", code = "";
 		if ($(item).hasClass("linija-box")) {
@@ -286,7 +287,7 @@ const jgp = async (userInput) => {
 
 	console.log("BUSLINE CODE: ", JSON.stringify(buslineCode));
 
-	busTimetable = $($(buslineCode[jgpData[userInput]])
+	busTimetable = $($(buslineCode[jgpData.lineRelation[userInput]])
 		.find(".nav-tabs > li")[dayToday])
 		.find("a").attr("href");
 
