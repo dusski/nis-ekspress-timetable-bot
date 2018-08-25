@@ -8,7 +8,7 @@ const axios = require("axios"),
     fs = require("fs");
 const jgpData = JSON.parse(fs.readFileSync("./jgp-data.json", "utf8"));
 
-export default async function jgpLines(userInput) {
+module.exports = async function jgpLines(userInput) {
 
     if (!userInput) return "Wrong input, try again!";
 
