@@ -374,8 +374,15 @@ bot.hear("!jgp", (payload, chat) => {
 	// chat.sendGenericTemplate(templates, { typing: true });
 });
 
-bot.on('postback', (payload, chat) => {
+bot.on('postback', async (payload, chat) => {
 	const messagePostback = payload.postback.payload;
 
-	chat.say("POSTBACK: " + messagePostback);
+	const busDepartures = async (message) => {
+
+		return await jgp(message);
+
+	}
+
+	chat.say(await busDepartures(messagePostback));
+
 });
