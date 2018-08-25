@@ -262,7 +262,7 @@ const jgp = async (userInput) => {
 	let buslineCode = {},
 		dayToday = moment().day() == 0 ? 2 : (moment().day() == 6 ? 1 : 0),
 		busTimetable = "",
-		numberOfHoursToShow = 5,
+		numberOfHoursToShow = 6,
 		currentTime = moment().hours(),
 		result = [],
 		counter = 0;
