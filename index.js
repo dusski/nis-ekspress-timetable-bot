@@ -11,6 +11,8 @@ const BootBot = require("bootbot"),
 
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
+const jgpData = JSON.parse(fs.readFileSync("./jgp-data.json", "utf8"));
+
 const getStations = string => {
 	const input = string.toLowerCase();
 	const input_latinized = latinize(input);
@@ -208,4 +210,148 @@ bot.hear(/\!bus/gi, (payload, chat) => {
 	chat.conversation(convo => {
 		inputFromStation(convo);
 	});
+});
+
+
+const jgp = async (userInput) => {
+
+	if (!userInput) return "Wrong input, try again!";
+
+	let buslineCode = {},
+		dayToday = moment().day() == 0 ? 2 : (moment().day() == 6 ? 1 : 0),
+		busTimetable = "",
+		numberOfHoursToShow = 6,
+		currentTime = moment().hours(),
+		result = [],
+		counter = 0;
+
+	console.log("AFTER INSTANTIATION: ");
+	console.log("dayToday: ", dayToday);
+	console.log("currentTime: ", currentTime);
+
+	let response = await axios.get(process.env.BASE_CB_URL);
+
+	let $ = cheerio.load(response.data);
+
+	$(".row.borderispod > div").map((index, item) => {
+		console.log("FROM BUSLINE CODE");
+		if (index <= 1) return "";
+		let busline = "", code = "";
+		if ($(item).hasClass("linija-box")) {
+			busline = $(item).first().text().replace(/\t/g, "").replace(/\n/g, "");
+			code = $(item).first().next().find("button").attr("data-target");
+			console.log("BUSLING: " + busline + "\nCODE: " + code);
+		}
+		if (busline && code)
+			buslineCode[busline] = code;
+	});
+
+	console.log("BUSLINE CODE: ", JSON.stringify(buslineCode));
+
+	busTimetable = $($(buslineCode[jgpData.lineRelation[userInput]])
+		.find(".nav-tabs > li")[dayToday])
+		.find("a").attr("href");
+
+	$(`${busTimetable} > table > tbody > tr`).map((index, item) => {
+		if (index < 1) return "";
+
+		let hour = $(item).children().first().text();
+		let minutes = $($(item).children()[1]).text();
+
+		console.log("HOURS: " + hour + "\nMINUTES: " + minutes);
+
+		if (currentTime < 4) {
+			if (index < 5) {
+				result.push(`${hour} | ${minutes}`);
+			}
+			if (index > 19) {
+				result.splice(counter, 0, `${hour} | ${minutes}`);
+				counter++;
+			}
+		} else {
+			if ((index + 3) >= currentTime && (index + 3) < (currentTime + numberOfHoursToShow)) {
+				result.push(`${hour} | ${minutes}`);
+			}
+		}
+
+	});
+
+	console.log("RESULT: \n\n", result.join("\n"));
+
+	return result.join("\n");
+
+}
+
+const generateTemplates = () => {
+
+	let templates = [];
+
+	let lineNames = jgpData.lineArray;
+
+	for (let index = 0; index < lineNames.length + 1; index += 3) {
+		let line = lineNames[index];
+
+		let template = {
+			title: "Linije",
+			buttons: []
+		};
+
+		let buttonOne, buttonTwo, buttonThree;
+
+		if (lineNames[index]) {
+			buttonOne = {
+				type: "postback",
+				title: lineNames[index],
+				payload: lineNames[index]
+			};
+
+			template.buttons.push(buttonOne);
+		}
+
+		if (lineNames[index + 1]) {
+			buttonTwo = {
+				type: "postback",
+				title: lineNames[index + 1],
+				payload: lineNames[index + 1]
+			};
+
+			template.buttons.push(buttonTwo);
+		}
+
+		if (lineNames[index + 2]) {
+			buttonThree = {
+				type: "postback",
+				title: lineNames[index + 2],
+				payload: lineNames[index + 2]
+			};
+
+			template.buttons.push(buttonThree);
+		}
+
+		templates.push(template);
+	}
+
+	return templates;
+
+}
+
+bot.hear("!jgp", (payload, chat) => {
+
+	let templates = generateTemplates();
+
+	chat.sendGenericTemplate(templates, { typing: true });
+
+});
+
+bot.on('postback', async (payload, chat) => {
+	const messagePostback = payload.postback.payload;
+
+	const busDepartures = async (message) => {
+
+		chat.say(await jgp(message));
+
+	}
+
+	chat.say(await busDepartures(messagePostback));
+
 });
