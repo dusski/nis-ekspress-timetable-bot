@@ -289,10 +289,8 @@ let generateTemplates = () => {
 		"ЛИНИЈА 36 (p)"
 	];
 
-	let lineNamesArray = Object.keys(lineNames);
-
-	for (let index = 0; index < lineNamesArray.length + 1; index += 3) {
-		let line = lineNamesArray[index];
+	for (let index = 0; index < lineNames.length + 1; index += 3) {
+		let line = lineNames[index];
 
 		let template = {
 			title: "Linije",
@@ -301,31 +299,31 @@ let generateTemplates = () => {
 
 		let buttonOne, buttonTwo, buttonThree;
 
-		if (lineNamesArray[index]) {
+		if (lineNames[index]) {
 			buttonOne = {
 				type: "postback",
-				title: lineNamesArray[index],
-				payload: lineNamesArray[index]
+				title: lineNames[index],
+				payload: lineNames[index]
 			};
 
 			template.buttons.push(buttonOne);
 		}
 
-		if (lineNamesArray[index + 1]) {
+		if (lineNames[index + 1]) {
 			buttonTwo = {
 				type: "postback",
-				title: lineNamesArray[index + 1],
-				payload: lineNamesArray[index + 1]
+				title: lineNames[index + 1],
+				payload: lineNames[index + 1]
 			};
 
 			template.buttons.push(buttonTwo);
 		}
 
-		if (lineNamesArray[index + 2]) {
+		if (lineNames[index + 2]) {
 			buttonThree = {
 				type: "postback",
-				title: lineNamesArray[index + 2],
-				payload: lineNamesArray[index + 2]
+				title: lineNames[index + 2],
+				payload: lineNames[index + 2]
 			};
 
 			template.buttons.push(buttonThree);
