@@ -256,7 +256,7 @@ bot.hear("!bus", (payload, chat) => {
 	});
 });
 
-const jgp = (userInput) => {
+const jgp = async (userInput) => {
 
 	if (!userInput) return "Wrong input, try again!";
 
@@ -270,9 +270,7 @@ const jgp = (userInput) => {
 		counter: 0
 	}
 
-	let response = await axios.get(process.env.BASE_CB_URL);
-
-	$ = cheerio.load(response);
+	$ = cheerio.load(await axios.get(process.env.BASE_CB_URL));
 
 	$(".row.borderispod > div").map((index, item) => {
 		if (index <= 1) return "";
