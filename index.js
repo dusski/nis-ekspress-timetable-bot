@@ -342,9 +342,7 @@ bot.hear("!jgp", (payload, chat) => {
 
 	let templates = generateTemplates();
 
-	console.log(JSON.stringify(templates));
-
-	chat.sendGenericTemplate(templates, { typing: true }).then((result) => {
-		console.log(result);
+	chat.sendGenericTemplate(templates, { typing: true }).then((payload) => {
+		console.log("payload", payload);
 	}, (error) => console.error(error));
 });
