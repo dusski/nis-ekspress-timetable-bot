@@ -273,9 +273,7 @@ const jgp = async (userInput) => {
 
 	let response = await axios.get(process.env.BASE_CB_URL);
 
-	console.log("RESPONSE", response);
-
-	let $ = cheerio.load(response);
+	let $ = cheerio.load(response.data);
 
 	$(".row.borderispod > div").map((index, item) => {
 		console.log("FROM BUSLINE CODE");
