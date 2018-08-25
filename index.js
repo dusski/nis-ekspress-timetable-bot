@@ -271,7 +271,11 @@ const jgp = async (userInput) => {
 	console.log("dayToday: ", dayToday);
 	console.log("currentTime: ", currentTime);
 
-	let $ = cheerio.load(await axios.get(process.env.BASE_CB_URL));
+	let response = await axios.get(process.env.BASE_CB_URL);
+
+	console.log("RESPONSE", response.slice(0, 500));
+
+	let $ = cheerio.load(response);
 
 	$(".row.borderispod > div").map((index, item) => {
 		console.log("FROM BUSLINE CODE");
