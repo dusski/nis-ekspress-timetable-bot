@@ -280,6 +280,7 @@ const jgp = async (userInput) => {
 		if ($(item).hasClass("linija-box")) {
 			busline = $(item).first().text().replace(/\t/g, "").replace(/\n/g, "");
 			code = $(item).first().next().find("button").attr("data-target");
+			console.log("BUSLING: " + busline + "\nCODE: " + code);
 		}
 		if (busline && code)
 			buslineCode[busline] = code;
