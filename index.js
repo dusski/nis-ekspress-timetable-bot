@@ -380,5 +380,5 @@ bot.hear("!jgp", (payload, chat) => {
 		});
 	})
 
-	chat.sendGenericTemplate(templates, { typing: true });
+	// chat.sendGenericTemplate(templates, { typing: true });
 });
