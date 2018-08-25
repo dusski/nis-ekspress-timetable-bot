@@ -306,6 +306,8 @@ const jgp = async (userInput) => {
 
 	});
 
+	console.log("RESULT: \n\n", result.join("\n"));
+
 	return result.join("\n");
 
 }
@@ -369,7 +371,6 @@ bot.hear("!jgp", (payload, chat) => {
 
 	chat.sendGenericTemplate(templates, { typing: true });
 
-	// chat.sendGenericTemplate(templates, { typing: true });
 });
 
 bot.on('postback', async (payload, chat) => {
@@ -377,7 +378,7 @@ bot.on('postback', async (payload, chat) => {
 
 	const busDepartures = async (message) => {
 
-		return await jgp(message);
+		chat.say(await jgp(message));
 
 	}
 
