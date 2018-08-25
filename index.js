@@ -375,7 +375,7 @@ bot.hear("!jgp", (payload, chat) => {
 
 	chat.conversation(convo => {
 		convo.sendGenericTemplate(templates, { typing: true }).then((payload, convo) => {
-			convo.say("PAYLOAD: \n" + JSON.stringify(payload));
+			chat.say("PAYLOAD: \n" + JSON.stringify(payload));
 			sendDepartures(payload.message.text)
 		});
 	})
