@@ -269,7 +269,7 @@ const jgp = async (userInput) => {
 		counter: 0
 	}
 
-	$ = cheerio.load(await axios.get(process.env.BASE_CB_URL));
+	let $ = cheerio.load(await axios.get(process.env.BASE_CB_URL));
 
 	$(".row.borderispod > div").map((index, item) => {
 		if (index <= 1) return "";
