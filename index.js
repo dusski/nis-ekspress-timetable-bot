@@ -259,7 +259,7 @@ const jgp = async (userInput) => {
 
 	if (!userInput) return "Wrong input, try again!";
 
-	const buslineCode = {},
+	let buslineCode = {},
 		dayToday = moment().day() == 0 ? 2 : (moment().day() == 6 ? 1 : 0),
 		busTimetable = "",
 		numberOfHoursToShow = 5,
