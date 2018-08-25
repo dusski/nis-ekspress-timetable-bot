@@ -9,8 +9,7 @@ const BootBot = require("bootbot"),
 	moment = require("moment"),
 	cheerio = require("cheerio"),
 	latinize = require("latinize"),
-	fs = require("fs"),
-	jgp = require("./jgp");
+	fs = require("fs");
 
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
