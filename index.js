@@ -267,6 +267,10 @@ const jgp = async (userInput) => {
 		result = [],
 		counter = 0;
 
+	console.log("AFTER INSTANTIATION: ");
+	console.log("dayToday: ", dayToday);
+	console.log("currentTime: ", currentTime);
+
 	let $ = cheerio.load(await axios.get(process.env.BASE_CB_URL));
 
 	$(".row.borderispod > div").map((index, item) => {
@@ -280,6 +284,8 @@ const jgp = async (userInput) => {
 			buslineCode[busline] = code;
 	});
 
+	console.log("BUSLINE CODE: ", JSON.stringify(buslineCode));
+
 	busTimetable = $($(buslineCode[jgpData[userInput]])
 		.find(".nav-tabs > li")[dayToday])
 		.find("a").attr("href");
@@ -289,6 +295,8 @@ const jgp = async (userInput) => {
 
 		let hour = $(item).children().first().text();
 		let minutes = $($(item).children()[1]).text();
+
+		console.log("HOURS: " + hour + "\nMINUTES: " + minutes);
 
 		if (currentTime < 4) {
 			if (index < 5) {
