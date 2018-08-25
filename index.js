@@ -9,7 +9,8 @@ const BootBot = require("bootbot"),
 	moment = require("moment"),
 	cheerio = require("cheerio"),
 	latinize = require("latinize"),
-	fs = require("fs");
+	fs = require("fs"),
+	jgp = require("./jgp");
 
 const buses = JSON.parse(fs.readFileSync("./data.json", "utf8"));
 
@@ -257,36 +258,36 @@ let generateTemplates = () => {
 
 	let templates = [];
 
-	const lineNames = {
-		"ЛИНИЈА 1": "НИШКАБАЊА-МИНОВОНАСЕЉЕ",
-		"ЛИНИЈА 1(p)": "МИНОВОНАСЕЉЕ-НИШКАБАЊА",
-		"ЛИНИЈА 2": "БУБАЊ-ДОЊАВРЕЖИНА",
-		"ЛИНИЈА 2(p)": "ДОЊАВРЕЖИНА-БУБАЊ",
-		"ЛИНИЈА 3": "БРЗИБРОД-НАС.Р.ЈОВИЋ",
-		"ЛИНИЈА 3(p)": "НАС.Р.ЈОВИЋ-БРЗИБРОД",
-		"ЛИНИЈА 4": "ЧАЛИЈЕ-БУБАЊ",
-		"ЛИНИЈА 4(p)": "БУБАЊ-ЧАЛИЈЕ",
-		"ЛИНИЈА 5": "ЖЕЛ.СТАНИЦА-СОМБОРСКА",
-		"ЛИНИЈА 5(p)": "СОМБОРСКА-ЖЕЛ.СТАНИЦА",
-		"ЛИНИЈА 6": "ЖЕЛ.СТАНИЦА-ДУВАНИШТЕ–СКОПСКА",
-		"ЛИНИЈА 6(p)": "ДУВАНИШТЕ–СКОПСКА-ЖЕЛ.СТАНИЦА",
-		"ЛИНИЈА 7": "САРАЈЕВСКА-КАЛАЧБ.",
-		"ЛИНИЈА 7(p)": "КАЛАЧБ.-САРАЈЕВСКА",
-		"ЛИНИЈА 8": "ГАБ.РЕКА(ПАСИПОЉАНА)-Н.ГРОБЉЕ",
-		"ЛИНИЈА 8(p)": "Н.ГРОБЉЕ-ГАБ.РЕКА(ПАСИПОЉАНА)",
-		"ЛИНИЈА 9": "МОКРАЊЧЕВА-Б.БЈЕГОВИЋ",
-		"ЛИНИЈА 9(p)": "Б.БЈЕГОВИЋ-МОКРАЊЧЕВА",
-		"ЛИНИЈА 10": "НАСЕЉЕ„9.мај“-ЋЕЛЕКУЛА",
-		"ЛИНИЈА 10(p)": "ЋЕЛЕКУЛА-НАСЕЉЕ„9.мај“",
-		"ЛИНИЈА 12": "ДОЊИКОМРЕН-ЊЕГОШЕВА",
-		"ЛИНИЈА 12(p)": "ЊЕГОШЕВА-ДОЊИКОМРЕН",
-		"ЛИНИЈА 13": "ТРГК.АЛЕКСАНДРА-БУЛ.НЕМАЊИЋА–ДЕЛИЈСКИВИС",
-		"ЛИНИЈА 13(p)": "ДЕЛИЈСКИВИС-БУЛ.НЕМАЊИЋА–ТРГК.АЛЕКСАНДРА",
-		"ЛИНИЈА 34(КРУЖНА)": "AЕРОДРОМ-А.СТАНИЦА–Ж.СТАНИЦА–AЕРОДРОМ",
-		"ЛИНИЈА 34(p)(КРУЖНА)": "AЕРОДРОМ-Ж.СТАНИЦА–А.СТАНИЦА–AЕРОДРОМ",
-		"ЛИНИЈА 36": "ТРГК.АЛЕКСАНДРА-МРАМОР",
-		"ЛИНИЈА 36(p)": "МРАМОР-ТРГК.АЛЕКСАНДРА"
-	};
+	const lineNames = [
+		"ЛИНИЈА 1",
+		"ЛИНИЈА 1 (p)",
+		"ЛИНИЈА 2",
+		"ЛИНИЈА 2 (p)",
+		"ЛИНИЈА 3",
+		"ЛИНИЈА 3 (p)",
+		"ЛИНИЈА 4",
+		"ЛИНИЈА 4 (p)",
+		"ЛИНИЈА 5",
+		"ЛИНИЈА 5 (p)",
+		"ЛИНИЈА 6",
+		"ЛИНИЈА 6 (p)",
+		"ЛИНИЈА 7 ",
+		"ЛИНИЈА 7 (p)",
+		"ЛИНИЈА 8",
+		"ЛИНИЈА 8 (p)",
+		"ЛИНИЈА 9 ",
+		"ЛИНИЈА 9 (p)",
+		"ЛИНИЈА 10",
+		"ЛИНИЈА 10 (p)",
+		"ЛИНИЈА 12",
+		"ЛИНИЈА 12 (p)",
+		"ЛИНИЈА 13",
+		"ЛИНИЈА 13 (p)",
+		"ЛИНИЈА 34 (КРУЖНА)",
+		"ЛИНИЈА 34 (p)",
+		"ЛИНИЈА 36",
+		"ЛИНИЈА 36 (p)"
+	];
 
 	let lineNamesArray = Object.keys(lineNames);
 
@@ -300,31 +301,31 @@ let generateTemplates = () => {
 
 		let buttonOne, buttonTwo, buttonThree;
 
-		if (lineNamesArray[index] && lineNames[lineNamesArray[index]]) {
+		if (lineNamesArray[index]) {
 			buttonOne = {
 				type: "postback",
 				title: lineNamesArray[index],
-				payload: lineNames[lineNamesArray[index]]
+				payload: lineNamesArray[index]
 			};
 
 			template.buttons.push(buttonOne);
 		}
 
-		if (lineNamesArray[index + 1] && lineNames[lineNamesArray[index + 1]]) {
+		if (lineNamesArray[index + 1]) {
 			buttonTwo = {
 				type: "postback",
 				title: lineNamesArray[index + 1],
-				payload: lineNames[lineNamesArray[index + 1]]
+				payload: lineNamesArray[index + 1]
 			};
 
 			template.buttons.push(buttonTwo);
 		}
 
-		if (lineNamesArray[index + 2] && lineNames[lineNamesArray[index + 2]]) {
+		if (lineNamesArray[index + 2]) {
 			buttonThree = {
 				type: "postback",
 				title: lineNamesArray[index + 2],
-				payload: lineNames[lineNamesArray[index + 2]]
+				payload: lineNamesArray[index + 2]
 			};
 
 			template.buttons.push(buttonThree);
@@ -345,5 +346,7 @@ bot.hear("!jgp", (payload, chat) => {
 
 	console.log(JSON.stringify(templates));
 
-	chat.sendGenericTemplate(templates, { typing: true })
+	chat.sendGenericTemplate(templates, { typing: true }).then((result) => {
+		console.log(result);
+	}, (error) => console.error(error));
 });
