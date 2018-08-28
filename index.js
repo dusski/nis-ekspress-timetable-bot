@@ -221,7 +221,7 @@ const jgp = async (userInput) => {
 		dayToday = moment().day() == 0 ? 2 : (moment().day() == 6 ? 1 : 0),
 		busTimetable = "",
 		numberOfHoursToShow = 4,
-		currentTime = moment().hours() + 2,
+		currentTime = moment().add(2, "hours").hours(),
 		result = [],
 		counter = 0;
 
