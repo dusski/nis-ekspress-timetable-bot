@@ -76,11 +76,12 @@ const getDepartures = async (
 				.load(el)(".columnPassengerArrivalTime")
 				.text();
 
-			return `${bus_line}\nDate: ${
-				departure_date_time.split(" ")[0]
-			}\nDeparture: ${departure_station_name.toUpperCase()} 🚌 ${
-				departure_date_time.split(" ")[1]
-			}\nArrival: ${arrival_station_name.toUpperCase()} 🚌 ${arrival_time}\n\n`;
+			return `${bus_line}
+			Date: ${departure_date_time.split(" ")[0]}
+			Departure: ${departure_station_name.toUpperCase()} 🚌 ${departure_date_time.split(" ")[1]}
+			Arrival: ${arrival_station_name.toUpperCase()} 🚌 ${arrival_time}
+			
+			`;
 		})
 		.get()
 		.join("");
