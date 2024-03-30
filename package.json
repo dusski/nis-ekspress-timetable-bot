@@ -4,14 +4,13 @@
   "description": "A timetable chatbot",
   "main": "index.js",
   "dependencies": {
-    "axios": "^0.17.1",
-    "bootbot": "^1.0.14",
+    "axios": "^0.27.2",
+    "bootbot": "^1.1.0",
     "cheerio": "^1.0.0-rc.2",
-    "dotenv": "^4.0.0",
-    "latinize": "^0.4.0",
-    "moment": "^2.20.1"
+    "dotenv": "^16.0.1",
+    "latinize": "^0.5.0",
+    "moment": "^2.29.4"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
